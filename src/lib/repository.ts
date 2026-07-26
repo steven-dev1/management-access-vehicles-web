@@ -233,6 +233,37 @@ export async function deleteVehicle(id: string): Promise<void> {
   if (error) throw error;
 }
 
+const VEHICLE_IMAGES_BUCKET = 'vehicle-images';
+const MAX_VEHICLE_IMAGES = 3;
+
+export async function uploadVehicleImage(vehicleId: string, file: File): Promise<string> {
+  const fileName = `${vehicleId}/${Date.now()}.jpg`;
+  const { error } = await supabase.storage
+    .from(VEHICLE_IMAGES_BUCKET)
+    .upload(fileName, file, { contentType: file.type || 'image/jpeg' });
+  if (error) throw error;
+  const { data } = supabase.storage.from(VEHICLE_IMAGES_BUCKET).getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+export async function deleteVehicleImage(imageUrl: string): Promise<void> {
+  const url = new URL(imageUrl);
+  const pathParts = url.pathname.split('/');
+  const bucketIndex = pathParts.indexOf(VEHICLE_IMAGES_BUCKET);
+  if (bucketIndex === -1) return;
+  const filePath = pathParts.slice(bucketIndex + 1).join('/');
+  const { error } = await supabase.storage.from(VEHICLE_IMAGES_BUCKET).remove([filePath]);
+  if (error) throw error;
+}
+
+export async function updateVehicleImages(vehicleId: string, images: string[]): Promise<void> {
+  const { error } = await supabase
+    .from('vehicles')
+    .update({ images, updated_at: new Date().toISOString() })
+    .eq('id', vehicleId);
+  if (error) throw error;
+}
+
 export async function searchVehicleByPlate(plate: string, licenseId?: string): Promise<Vehicle | null> {
 
   let query = supabase
