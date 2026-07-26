@@ -484,7 +484,7 @@ export async function deleteLicense(licenseId: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function updateLicense(licenseId: string, updates: { complex_name?: string; max_devices?: number; trial_ends_at?: string | null }): Promise<License> {
+export async function updateLicense(licenseId: string, updates: { complex_name?: string; max_devices?: number; active?: boolean; trial_ends_at?: string | null }): Promise<License> {
   const { data, error } = await supabase
     .from('licenses')
     .update({ ...updates, updated_at: new Date().toISOString() })

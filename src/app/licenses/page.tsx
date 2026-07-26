@@ -108,6 +108,13 @@ export default function LicensesPage() {
     } catch { }
   };
 
+  const handleToggleLicense = async (license: License) => {
+    try {
+      const updated = await updateLicense(license.id, { active: !license.active });
+      setLicenses(prev => prev.map(l => l.id === license.id ? updated : l));
+    } catch { }
+  };
+
   const handleCopy = (key: string) => { navigator.clipboard.writeText(key); };
 
   const getDeviceCount = (licenseId: string) => devices.filter(d => d.license_id === licenseId).length;
@@ -231,12 +238,13 @@ export default function LicensesPage() {
                         <Button variant="outline" size="sm" onClick={() => startEdit(license)} className="flex-1 border-[#374151] text-white hover:bg-[#2A2A2A]">
                           <Edit3 className="mr-1 h-3 w-3" /> Editar
                         </Button>
-                        {isExpired ? (
-                          <Button variant="outline" size="sm" className="flex-1 border-[#10B981]/30 text-[#10B981] hover:bg-[#10B981]/10"
-                            onClick={() => { setExtendTarget(license); setExtendDays('30'); setShowExtend(true); }}>
-                            <RefreshCw className="mr-1 h-3 w-3" /> Reactivar
-                          </Button>
-                        ) : (
+                        <Button variant="outline" size="sm"
+                          className={`flex-1 ${license.active ? 'border-[#F59E0B]/30 text-[#F59E0B] hover:bg-[#F59E0B]/10' : 'border-[#10B981]/30 text-[#10B981] hover:bg-[#10B981]/10'}`}
+                          onClick={() => handleToggleLicense(license)}>
+                          {license.active ? <PowerOff className="mr-1 h-3 w-3" /> : <Power className="mr-1 h-3 w-3" />}
+                          {license.active ? 'Desactivar' : 'Activar'}
+                        </Button>
+                        {!license.active && (
                           <Button variant="outline" size="sm" className="flex-1 border-[#EF4444]/30 text-[#EF4444] hover:bg-[#EF4444]/10" onClick={() => handleDelete(license)}>
                             <Trash2 className="h-3 w-3" />
                           </Button>
