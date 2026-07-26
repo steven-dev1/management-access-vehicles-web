@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Car, Bike, Building, Shield, Activity, Key, CheckCircle, Clock, Smartphone, ChevronRight } from 'lucide-react';
+import { Car, Bike, Building, Shield, Activity, Key, CheckCircle, Clock, Smartphone, ChevronRight, Maximize2 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
@@ -217,42 +217,91 @@ function UserPanel() {
         <StatCard title="Torres" value={14} icon={Building} color="text-amber-400" bgColor="bg-amber-500/15 border-amber-500/30" />
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 flex-1 min-h-0">
-        <button onClick={() => setOpenSection('towers')} className="bg-[#1A1A1A] border border-[#374151] rounded-lg p-4 flex flex-col items-center justify-center gap-3 hover:bg-[#222] hover:border-[#3B82F6]/40 transition-all cursor-pointer group">
-          <Building className="w-8 h-8 text-[#3B82F6] group-hover:scale-110 transition-transform" />
-          <div className="text-center">
-            <p className="text-white font-semibold text-sm">Vehículos por Torre</p>
-            <p className="text-slate-400 text-xs mt-1">{towerStats.length} torres</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#3B82F6] transition-colors" />
-        </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0">
+        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2 flex flex-col min-h-0">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
+            <CardTitle className="text-white">Vehículos por Torre</CardTitle>
+            <button onClick={() => setOpenSection('towers')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0 p-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={towerStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-        <button onClick={() => setOpenSection('occupancy')} className="bg-[#1A1A1A] border border-[#374151] rounded-lg p-4 flex flex-col items-center justify-center gap-3 hover:bg-[#222] hover:border-emerald-500/40 transition-all cursor-pointer group">
-          <Activity className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
-          <div className="text-center">
-            <p className="text-white font-semibold text-sm">Ocupación</p>
-            <p className="text-slate-400 text-xs mt-1">{occupancy.length} torres</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
-        </button>
+        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
+            <CardTitle className="text-white">Ocupación</CardTitle>
+            <button onClick={() => setOpenSection('occupancy')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0 p-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={occupancy}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
 
-        <button onClick={() => setOpenSection('restrictions')} className="bg-[#1A1A1A] border border-[#374151] rounded-lg p-4 flex flex-col items-center justify-center gap-3 hover:bg-[#222] hover:border-amber-500/40 transition-all cursor-pointer group">
-          <Shield className="w-8 h-8 text-amber-400 group-hover:scale-110 transition-transform" />
-          <div className="text-center">
-            <p className="text-white font-semibold text-sm">Restricciones</p>
-            <p className="text-slate-400 text-xs mt-1">{violations.length} apts</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
-        </button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 shrink-0 max-h-[45%]">
+        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
+            <CardTitle className="text-white flex items-center gap-2">
+              <Shield className="w-5 h-5 text-amber-400" />
+              Restricciones
+            </CardTitle>
+            <button onClick={() => setOpenSection('restrictions')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-2">
+            {violations.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay restricciones</p>
+            ) : violations.slice(0, 4).map((v) => (
+              <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                <div>
+                  <p className="text-white font-medium text-sm">Torre {v.tower} - Apto {v.apartment_code}</p>
+                  <p className="text-slate-500 text-xs">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
+                </div>
+                <span className="text-amber-400 font-bold text-sm">{v.vehicle_count} vehículos</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
-        <button onClick={() => setOpenSection('parking')} className="bg-[#1A1A1A] border border-[#374151] rounded-lg p-4 flex flex-col items-center justify-center gap-3 hover:bg-[#222] hover:border-orange-500/40 transition-all cursor-pointer group">
-          <Activity className="w-8 h-8 text-orange-400 group-hover:scale-110 transition-transform" />
-          <div className="text-center">
-            <p className="text-white font-semibold text-sm">Estacionamiento</p>
-            <p className="text-slate-400 text-xs mt-1">{parkingAlerts.length} vehículos</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-orange-400 transition-colors" />
-        </button>
+        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
+            <CardTitle className="text-white flex items-center gap-2">
+              <Activity className="w-5 h-5 text-orange-400" />
+              Estacionamiento +1 Mes
+            </CardTitle>
+            <button onClick={() => setOpenSection('parking')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-2">
+            {parkingAlerts.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay alertas</p>
+            ) : parkingAlerts.slice(0, 4).map((a) => (
+              <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                <div>
+                  <p className="text-white font-medium text-sm">{a.license_plate} — {a.owner_name}</p>
+                  <p className="text-slate-500 text-xs">Torre {a.tower} · Apto {a.apartment_code}</p>
+                </div>
+                <span className="text-orange-400 font-bold text-sm">{a.days_parked} días</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
 
       <Dialog open={openSection === 'towers'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
