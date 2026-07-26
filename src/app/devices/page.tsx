@@ -46,13 +46,13 @@ export default function DevicesPage() {
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="animate-pulse bg-slate-900/60 border-blue-800/30">
+            <Card key={i} className="animate-pulse bg-[#1A1A1A] border-[#374151]">
               <CardContent className="p-6"><div className="h-24" /></CardContent>
             </Card>
           ))}
         </div>
       ) : devices.length === 0 ? (
-        <Card className="bg-slate-900/60 border-blue-800/30">
+        <Card className="bg-[#1A1A1A] border-[#374151]">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Smartphone className="mb-4 h-12 w-12 text-slate-600" />
             <p className="text-slate-400">Sin dispositivos registrados</p>
@@ -63,16 +63,16 @@ export default function DevicesPage() {
           {devices.map(device => {
             const isRecent = new Date(device.registered_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
             return (
-              <Card key={device.id} className="bg-slate-900/60 border-blue-800/30">
+              <Card key={device.id} className="bg-[#1A1A1A] border-[#374151]">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isRecent ? 'bg-green-500/10' : 'bg-blue-900/30'}`}>
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isRecent ? 'bg-green-500/10' : 'bg-[#1A1A1A]'}`}>
                         <Smartphone className={`h-5 w-5 ${isRecent ? 'text-green-400' : 'text-slate-400'}`} />
                       </div>
                       <div>
                         <p className="font-medium text-white">{device.device_name || 'Desconocido'}</p>
-                        {device.complex_name && <p className="text-sm text-blue-400">{device.complex_name}</p>}
+                        {device.complex_name && <p className="text-sm text-[#3B82F6]">{device.complex_name}</p>}
                       </div>
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => handleToggle(device)} className="text-slate-400 hover:text-white">

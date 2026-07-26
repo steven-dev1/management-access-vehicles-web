@@ -49,7 +49,7 @@ export default function NewVehiclePage() {
         <h1 className="text-2xl font-bold text-white">Nuevo Vehículo</h1>
       </div>
 
-      <Card className="bg-slate-900/60 border-blue-800/30 max-w-2xl">
+      <Card className="bg-[#1A1A1A] border-[#374151] max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-red-400 text-sm">{error}</p>}
@@ -60,7 +60,7 @@ export default function NewVehiclePage() {
                 value={form.license_plate}
                 onChange={(e) => setForm({ ...form, license_plate: e.target.value.toUpperCase() })}
                 placeholder="ABC 123"
-                className="bg-blue-900/30 border-blue-800/40 text-white"
+                className="bg-[#1A1A1A] border-[#374151] text-white"
                 required
               />
             </div>
@@ -71,7 +71,7 @@ export default function NewVehiclePage() {
                 <select
                   value={form.vehicle_type}
                   onChange={(e) => setForm({ ...form, vehicle_type: e.target.value as VehicleFormData['vehicle_type'] })}
-                  className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
+                  className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white"
                 >
                   <option value="car">Carro</option>
                   <option value="motorcycle">Moto</option>
@@ -82,7 +82,7 @@ export default function NewVehiclePage() {
                 <select
                   value={form.tower}
                   onChange={(e) => setForm({ ...form, tower: parseInt(e.target.value) })}
-                  className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
+                  className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white"
                 >
                   {TOWERS.map((t) => <option key={t} value={t}>Torre {t}</option>)}
                 </select>
@@ -95,7 +95,7 @@ export default function NewVehiclePage() {
                 <select
                   value={form.floor}
                   onChange={(e) => setForm({ ...form, floor: parseInt(e.target.value) })}
-                  className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
+                  className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white"
                 >
                   {FLOORS.map((f) => <option key={f} value={f}>Piso {f}</option>)}
                 </select>
@@ -105,7 +105,7 @@ export default function NewVehiclePage() {
                 <select
                   value={form.apartment}
                   onChange={(e) => setForm({ ...form, apartment: parseInt(e.target.value) })}
-                  className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
+                  className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white"
                 >
                   {APARTMENTS_PER_FLOOR.map((a) => <option key={a} value={a}>Apto {a}</option>)}
                 </select>
@@ -118,7 +118,7 @@ export default function NewVehiclePage() {
                 value={form.owner_name}
                 onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
                 placeholder="Nombre del propietario"
-                className="bg-blue-900/30 border-blue-800/40 text-white"
+                className="bg-[#1A1A1A] border-[#374151] text-white"
                 required
               />
             </div>

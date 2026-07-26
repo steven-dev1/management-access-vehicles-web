@@ -1,4 +1,4 @@
-import { createClient } from './supabase';
+import { supabase } from './supabase';
 import {
   Vehicle,
   VehicleFormData,
@@ -32,7 +32,7 @@ function addLicenseFilter(query: any, licenseId?: string | null) {
 }
 
 export async function getDashboardStats(licenseId?: string): Promise<DashboardStats> {
-  const supabase = createClient();
+
   let query = supabase.from('vehicles').select('vehicle_type');
   query = addLicenseFilter(query, licenseId);
   const { data: vehicles, error } = await query;
@@ -49,7 +49,7 @@ export async function getDashboardStats(licenseId?: string): Promise<DashboardSt
 }
 
 export async function getTowerStats(licenseId?: string): Promise<TowerStats[]> {
-  const supabase = createClient();
+
   let query = supabase.from('vehicles').select('tower, vehicle_type');
   query = addLicenseFilter(query, licenseId);
   const { data: vehicles, error } = await query;
@@ -67,7 +67,7 @@ export async function getTowerStats(licenseId?: string): Promise<TowerStats[]> {
 }
 
 export async function getApartmentViolations(licenseId?: string): Promise<ApartmentViolation[]> {
-  const supabase = createClient();
+
   let query = supabase.from('vehicles').select('tower, floor, apartment, apartment_code, vehicle_type');
   query = addLicenseFilter(query, licenseId);
   const { data: vehicles, error } = await query;
@@ -98,7 +98,7 @@ export async function getApartmentViolations(licenseId?: string): Promise<Apartm
 }
 
 export async function getParkingAlerts(licenseId?: string): Promise<ParkingAlert[]> {
-  const supabase = createClient();
+
   let logQuery = supabase
     .from('access_logs')
     .select('vehicle_id, access_type, timestamp, vehicles!inner(id, license_plate, owner_name, tower, apartment_code, vehicle_type)');
@@ -130,7 +130,7 @@ export async function getParkingAlerts(licenseId?: string): Promise<ParkingAlert
 }
 
 export async function getOccupancyStats(licenseId?: string): Promise<OccupancyStats[]> {
-  const supabase = createClient();
+
   let query = supabase.from('vehicles').select('tower, apartment_code, vehicle_type');
   query = addLicenseFilter(query, licenseId);
   const { data: vehicles, error } = await query;
@@ -154,7 +154,7 @@ export async function getOccupancyStats(licenseId?: string): Promise<OccupancySt
 }
 
 export async function getVehicles(filters?: FilterOptions, sort?: SortOption, licenseId?: string): Promise<Vehicle[]> {
-  const supabase = createClient();
+
   let query = supabase.from('vehicles').select('*');
   query = addLicenseFilter(query, licenseId);
 
@@ -180,7 +180,7 @@ export async function getVehicles(filters?: FilterOptions, sort?: SortOption, li
 }
 
 export async function createVehicle(vehicleData: VehicleFormData, licenseId?: string): Promise<Vehicle> {
-  const supabase = createClient();
+
   const lid = licenseId || getCurrentLicenseId();
   const apartment_code = generateApartmentCode(vehicleData.floor, vehicleData.apartment);
 
@@ -208,14 +208,14 @@ export async function createVehicle(vehicleData: VehicleFormData, licenseId?: st
 }
 
 export async function getVehicleById(id: string): Promise<Vehicle | null> {
-  const supabase = createClient();
+
   const { data, error } = await supabase.from('vehicles').select('*').eq('id', id).single();
   if (error) throw error;
   return data;
 }
 
 export async function updateVehicle(id: string, vehicleData: Partial<VehicleFormData>): Promise<Vehicle> {
-  const supabase = createClient();
+
   const updateData: any = { ...vehicleData, updated_at: new Date().toISOString() };
   if (vehicleData.floor && vehicleData.apartment) {
     updateData.apartment_code = generateApartmentCode(vehicleData.floor, vehicleData.apartment);
@@ -228,13 +228,13 @@ export async function updateVehicle(id: string, vehicleData: Partial<VehicleForm
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
-  const supabase = createClient();
+
   const { error } = await supabase.from('vehicles').delete().eq('id', id);
   if (error) throw error;
 }
 
 export async function searchVehicleByPlate(plate: string, licenseId?: string): Promise<Vehicle | null> {
-  const supabase = createClient();
+
   let query = supabase
     .from('vehicles')
     .select('*')
@@ -246,7 +246,7 @@ export async function searchVehicleByPlate(plate: string, licenseId?: string): P
 }
 
 export async function registerAccess(vehicleId: string, accessType: AccessType, plateScanned?: string, licenseId?: string): Promise<AccessLog> {
-  const supabase = createClient();
+
   const lid = licenseId || getCurrentLicenseId();
 
   const insertData: any = {
@@ -267,7 +267,7 @@ export async function registerAccess(vehicleId: string, accessType: AccessType, 
 }
 
 export async function getAccessHistory(limit?: number, licenseId?: string): Promise<AccessLog[]> {
-  const supabase = createClient();
+
   let query = supabase
     .from('access_logs')
     .select('*, vehicles(*)')
@@ -280,7 +280,7 @@ export async function getAccessHistory(limit?: number, licenseId?: string): Prom
 }
 
 export async function getTodayAccessLogs(licenseId?: string): Promise<AccessLog[]> {
-  const supabase = createClient();
+
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
@@ -298,7 +298,7 @@ export async function getTodayAccessLogs(licenseId?: string): Promise<AccessLog[
 }
 
 export async function getVisitors(status?: VisitorStatus, licenseId?: string): Promise<Visitor[]> {
-  const supabase = createClient();
+
   let query = supabase.from('visitors').select('*').order('created_at', { ascending: false });
   query = addLicenseFilter(query, licenseId);
   if (status) query = query.eq('status', status);
@@ -308,7 +308,7 @@ export async function getVisitors(status?: VisitorStatus, licenseId?: string): P
 }
 
 export async function createVisitor(visitorData: VisitorFormData, licenseId?: string): Promise<Visitor> {
-  const supabase = createClient();
+
   const lid = licenseId || getCurrentLicenseId();
 
   const insertData: any = {
@@ -333,7 +333,7 @@ export async function createVisitor(visitorData: VisitorFormData, licenseId?: st
 }
 
 export async function checkInVisitor(id: string): Promise<Visitor> {
-  const supabase = createClient();
+
   const { data, error } = await supabase
     .from('visitors')
     .update({ status: 'active', entry_time: new Date().toISOString() })
@@ -345,7 +345,7 @@ export async function checkInVisitor(id: string): Promise<Visitor> {
 }
 
 export async function checkOutVisitor(id: string): Promise<Visitor> {
-  const supabase = createClient();
+
   const { data, error } = await supabase
     .from('visitors')
     .update({ status: 'completed', exit_time: new Date().toISOString() })
@@ -357,34 +357,34 @@ export async function checkOutVisitor(id: string): Promise<Visitor> {
 }
 
 export async function deleteVisitor(id: string): Promise<void> {
-  const supabase = createClient();
+
   const { error } = await supabase.from('visitors').delete().eq('id', id);
   if (error) throw error;
 }
 
 export async function getLicenses(): Promise<License[]> {
-  const supabase = createClient();
+
   const { data, error } = await supabase.from('licenses').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function getLicenseDevices(licenseId: string): Promise<LicenseDevice[]> {
-  const supabase = createClient();
+
   const { data, error } = await supabase.from('license_devices').select('*').eq('license_id', licenseId).order('registered_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function getAllDevices(): Promise<LicenseDevice[]> {
-  const supabase = createClient();
+
   const { data, error } = await supabase.from('license_devices').select('*').order('registered_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
 
 export async function activateLicense(licenseKey: string, deviceId: string, deviceName?: string): Promise<{ license: License; device: LicenseDevice }> {
-  const supabase = createClient();
+
   const { data: license, error: licenseError } = await supabase
     .from('licenses')
     .select('*')
@@ -437,7 +437,7 @@ export async function activateLicense(licenseKey: string, deviceId: string, devi
 }
 
 export async function extendLicense(licenseId: string, days: number = 30): Promise<License> {
-  const supabase = createClient();
+
   const { data: current, error: fetchError } = await supabase.from('licenses').select('*').eq('id', licenseId).single();
   if (fetchError) throw fetchError;
 
@@ -458,7 +458,7 @@ export async function extendLicense(licenseId: string, days: number = 30): Promi
 }
 
 export async function createLicense(complexName: string, maxDevices: number = 3, trialDays?: number): Promise<License> {
-  const supabase = createClient();
+
   const key = `LIC-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
   const trialEndsAt = trialDays ? new Date(Date.now() + trialDays * 86400000).toISOString() : null;
 
@@ -472,20 +472,42 @@ export async function createLicense(complexName: string, maxDevices: number = 3,
 }
 
 export async function toggleLicenseDevice(deviceId: string, active: boolean): Promise<void> {
-  const supabase = createClient();
+
   const { error } = await supabase.from('license_devices').update({ active }).eq('id', deviceId);
   if (error) throw error;
 }
 
 export async function deleteLicense(licenseId: string): Promise<void> {
-  const supabase = createClient();
+
   await supabase.from('license_devices').delete().eq('license_id', licenseId);
   const { error } = await supabase.from('licenses').delete().eq('id', licenseId);
   if (error) throw error;
 }
 
+export async function updateLicense(licenseId: string, updates: { complex_name?: string; max_devices?: number; trial_ends_at?: string | null }): Promise<License> {
+  const { data, error } = await supabase
+    .from('licenses')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', licenseId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function setPermanent(licenseId: string): Promise<License> {
+  const { data, error } = await supabase
+    .from('licenses')
+    .update({ trial_ends_at: null, updated_at: new Date().toISOString() })
+    .eq('id', licenseId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function isDeviceAuthorized(deviceId: string): Promise<boolean> {
-  const supabase = createClient();
+
   const { data, error } = await supabase
     .from('license_devices')
     .select('id')
@@ -497,7 +519,7 @@ export async function isDeviceAuthorized(deviceId: string): Promise<boolean> {
 }
 
 export async function getComplexNameForDevice(deviceId: string): Promise<string | null> {
-  const supabase = createClient();
+
   const { data, error } = await supabase
     .from('license_devices')
     .select('licenses(complex_name)')

@@ -37,17 +37,17 @@ export default function ActivatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#111111] to-[#0A0A0A] flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600/20 mb-4">
-            <Car className="w-8 h-8 text-blue-400" />
+            <Car className="w-8 h-8 text-[#3B82F6]" />
           </div>
           <h1 className="text-3xl font-bold text-white">Vehicle Access</h1>
           <p className="text-slate-400">Sistema de Control de Acceso Vehicular</p>
         </div>
 
-        <Card className="bg-slate-900/60 border-blue-800/30 backdrop-blur">
+        <Card className="bg-[#1A1A1A] border-[#374151] backdrop-blur">
           <CardHeader className="text-center">
             <CardTitle className="text-white flex items-center justify-center gap-2">
               <Key className="w-5 h-5" />
@@ -74,7 +74,7 @@ export default function ActivatePage() {
                   placeholder="Ejemplo: LIC-XXXXXXX-XXXX"
                   value={licenseKey}
                   onChange={(e) => setLicenseKey(e.target.value)}
-                  className="bg-blue-900/30 border-blue-800/40 text-white placeholder:text-slate-500 focus:border-blue-500"
+                  className="bg-[#1A1A1A] border-[#374151] text-white placeholder:text-slate-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -100,7 +100,7 @@ export default function ActivatePage() {
         <div className="text-center space-y-3">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-blue-900/50" />
+              <div className="w-full border-t border-[#374151]" />
             </div>
             <div className="relative flex justify-center text-xs">
               <span className="bg-slate-900 px-3 text-slate-500">o</span>

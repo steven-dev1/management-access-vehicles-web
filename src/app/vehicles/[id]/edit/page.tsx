@@ -57,27 +57,27 @@ export default function EditVehiclePage({ params }: { params: Promise<{ id: stri
         <h1 className="text-2xl font-bold text-white">Editar Vehículo</h1>
       </div>
 
-      <Card className="bg-slate-900/60 border-blue-800/30 max-w-2xl">
+      <Card className="bg-[#1A1A1A] border-[#374151] max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-red-400 text-sm">{error}</p>}
 
             <div className="space-y-2">
               <Label className="text-slate-300">Placa</Label>
-              <Input value={form.license_plate} onChange={(e) => setForm({ ...form, license_plate: e.target.value.toUpperCase() })} className="bg-blue-900/30 border-blue-800/40 text-white" required />
+              <Input value={form.license_plate} onChange={(e) => setForm({ ...form, license_plate: e.target.value.toUpperCase() })} className="bg-[#1A1A1A] border-[#374151] text-white" required />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-slate-300">Tipo</Label>
-                <select value={form.vehicle_type} onChange={(e) => setForm({ ...form, vehicle_type: e.target.value as VehicleFormData['vehicle_type'] })} className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white">
+                <select value={form.vehicle_type} onChange={(e) => setForm({ ...form, vehicle_type: e.target.value as VehicleFormData['vehicle_type'] })} className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white">
                   <option value="car">Carro</option>
                   <option value="motorcycle">Moto</option>
                 </select>
               </div>
               <div className="space-y-2">
                 <Label className="text-slate-300">Torre</Label>
-                <select value={form.tower} onChange={(e) => setForm({ ...form, tower: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white">
+                <select value={form.tower} onChange={(e) => setForm({ ...form, tower: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white">
                   {TOWERS.map((t) => <option key={t} value={t}>Torre {t}</option>)}
                 </select>
               </div>
@@ -86,13 +86,13 @@ export default function EditVehiclePage({ params }: { params: Promise<{ id: stri
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-slate-300">Piso</Label>
-                <select value={form.floor} onChange={(e) => setForm({ ...form, floor: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white">
+                <select value={form.floor} onChange={(e) => setForm({ ...form, floor: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white">
                   {FLOORS.map((f) => <option key={f} value={f}>Piso {f}</option>)}
                 </select>
               </div>
               <div className="space-y-2">
                 <Label className="text-slate-300">Apartamento</Label>
-                <select value={form.apartment} onChange={(e) => setForm({ ...form, apartment: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white">
+                <select value={form.apartment} onChange={(e) => setForm({ ...form, apartment: parseInt(e.target.value) })} className="flex h-8 w-full items-center rounded-lg border border-[#374151] bg-[#1A1A1A] px-3 py-1 text-sm text-white">
                   {APARTMENTS_PER_FLOOR.map((a) => <option key={a} value={a}>Apto {a}</option>)}
                 </select>
               </div>
@@ -100,7 +100,7 @@ export default function EditVehiclePage({ params }: { params: Promise<{ id: stri
 
             <div className="space-y-2">
               <Label className="text-slate-300">Propietario</Label>
-              <Input value={form.owner_name} onChange={(e) => setForm({ ...form, owner_name: e.target.value })} className="bg-blue-900/30 border-blue-800/40 text-white" required />
+              <Input value={form.owner_name} onChange={(e) => setForm({ ...form, owner_name: e.target.value })} className="bg-[#1A1A1A] border-[#374151] text-white" required />
             </div>
 
             <Button type="submit" disabled={saving} className="w-full bg-blue-600 hover:bg-blue-700">

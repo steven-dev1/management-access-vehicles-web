@@ -36,18 +36,18 @@ export function MobileHeader() {
   };
 
   return (
-    <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-blue-950/80 backdrop-blur-xl border-b border-blue-900/50 px-4 py-3 flex items-center justify-between">
+    <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A] border-b border-[#374151] px-4 py-3 flex items-center justify-between">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <Button variant="ghost" size="icon" className="text-white">
             <Menu className="w-5 h-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="bg-blue-950/95 backdrop-blur-xl border-blue-900/50 w-64 p-0" showCloseButton={false}>
+        <SheetContent side="left" className="bg-[#0A0A0A] border-[#374151] w-64 p-0" showCloseButton={false}>
           <div className="flex flex-col h-full">
-            <div className="p-4 border-b border-blue-900/50">
+            <div className="p-4 border-b border-[#374151]">
               <div className="flex items-center gap-2">
-                <Car className="w-5 h-5 text-blue-400" />
+                <Car className="w-5 h-5 text-[#3B82F6]" />
                 <span className="font-bold text-white">Vehicle Access</span>
               </div>
             </div>
@@ -58,7 +58,7 @@ export function MobileHeader() {
                   <button
                     key={link.href}
                     onClick={() => { router.push(link.href); setOpen(false); }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-slate-300 hover:bg-blue-900/30 hover:text-white transition-colors"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-white transition-colors"
                   >
                     <Icon className="w-4 h-4" />
                     {link.label}
@@ -66,10 +66,10 @@ export function MobileHeader() {
                 );
               })}
             </nav>
-            <div className="p-2 border-t border-blue-900/50">
+            <div className="p-2 border-t border-[#374151]">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-blue-900/30 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-[#EF4444] hover:bg-[#1A1A1A] transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Cerrar Sesión
@@ -80,7 +80,7 @@ export function MobileHeader() {
       </Sheet>
 
       <div className="flex items-center gap-2">
-        <Car className="w-5 h-5 text-blue-400" />
+        <Car className="w-5 h-5 text-[#3B82F6]" />
         <span className="font-bold text-white">Vehicle Access</span>
       </div>
 

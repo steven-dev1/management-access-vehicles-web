@@ -51,10 +51,10 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1 bg-slate-900/60 border-blue-800/30">
+        <Card className="lg:col-span-1 bg-[#1A1A1A] border-[#374151]">
           <CardContent className="p-6 space-y-4">
             <div className="flex items-center gap-3">
-              {vehicle.vehicle_type === 'car' ? <Car className="w-8 h-8 text-blue-400" /> : <Bike className="w-8 h-8 text-purple-400" />}
+              {vehicle.vehicle_type === 'car' ? <Car className="w-8 h-8 text-[#3B82F6]" /> : <Bike className="w-8 h-8 text-purple-400" />}
               <div>
                 <p className="text-white font-bold text-lg">{vehicle.license_plate}</p>
                 <Badge variant={vehicle.vehicle_type === 'car' ? 'default' : 'secondary'}>{VEHICLE_TYPE_LABELS[vehicle.vehicle_type]}</Badge>
@@ -75,7 +75,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 bg-slate-900/60 border-blue-800/30">
+        <Card className="lg:col-span-2 bg-[#1A1A1A] border-[#374151]">
           <CardHeader><CardTitle className="text-white flex items-center gap-2"><Clock className="w-5 h-5" /> Historial de Acceso</CardTitle></CardHeader>
           <CardContent>
             {accessLogs.length === 0 ? (
@@ -83,7 +83,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {accessLogs.map((log) => (
-                  <div key={log.id} className="flex items-center gap-3 p-3 bg-blue-900/15 rounded-lg">
+                  <div key={log.id} className="flex items-center gap-3 p-3 bg-[#1A1A1A]/50 rounded-lg">
                     {log.access_type === 'entry' ? (
                       <LogIn className="w-4 h-4 text-green-400" />
                     ) : (
