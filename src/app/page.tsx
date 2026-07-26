@@ -209,16 +209,16 @@ function UserPanel() {
   if (loading) return <LoadingSkeleton />;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 py-2 shrink-0 h-[13vh]">
+    <div className="h-full grid grid-rows-[12vh_1fr_1fr] gap-3 overflow-hidden p-0.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard title="Total Vehículos" value={stats?.total_vehicles || 0} icon={Car} color="text-[#3B82F6]" bgColor="bg-[#3B82F6]/15 border-[#3B82F6]/30" />
         <StatCard title="Carros" value={stats?.total_cars || 0} icon={Car} color="text-emerald-400" bgColor="bg-emerald-500/15 border-emerald-500/30" />
         <StatCard title="Motos" value={stats?.total_motorcycles || 0} icon={Bike} color="text-purple-400" bgColor="bg-purple-500/15 border-purple-500/30" />
         <StatCard title="Torres" value={14} icon={Building} color="text-amber-400" bgColor="bg-amber-500/15 border-amber-500/30" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 shrink-0 h-[43vh]">
-        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2 flex flex-col overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-0">
+        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2 flex flex-col min-h-0">
           <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
             <CardTitle className="text-white text-sm">Vehículos por Torre</CardTitle>
             <button onClick={() => setOpenSection('towers')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
@@ -237,7 +237,7 @@ function UserPanel() {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col overflow-hidden">
+        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
           <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
             <CardTitle className="text-white text-sm">Ocupación</CardTitle>
             <button onClick={() => setOpenSection('occupancy')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
@@ -256,7 +256,7 @@ function UserPanel() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-1 min-h-0 pb-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 min-h-0">
         <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
           <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
             <CardTitle className="text-white flex items-center gap-2 text-sm">
