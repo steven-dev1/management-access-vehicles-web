@@ -125,7 +125,7 @@ export async function getParkingAlerts(licenseId?: string): Promise<ParkingAlert
       last_entry: entry,
       days_parked: Math.floor((now.getTime() - new Date(entry).getTime()) / (1000 * 60 * 60 * 24)),
     }))
-    .filter((a) => a.days_parked >= 2)
+    .filter((a) => a.days_parked >= 30)
     .sort((a, b) => b.days_parked - a.days_parked);
 }
 

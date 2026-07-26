@@ -30,7 +30,7 @@ export function MobileHeader() {
     localStorage.removeItem('license_id');
     localStorage.removeItem('complex_name');
     localStorage.removeItem('is_admin');
-    router.push('/login');
+    router.push('/activate');
     setOpen(false);
   };
 

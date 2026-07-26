@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Car, Bike, Building, AlertTriangle, Activity, Key, CheckCircle, Clock, Smartphone, LogOut, ChevronRight } from 'lucide-react';
+import { Car, Bike, Building, Shield, Activity, Key, CheckCircle, Clock, Smartphone, ChevronRight, AlertTriangle } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
@@ -216,105 +215,92 @@ function UserPanel() {
         <StatCard title="Torres" value={14} icon={Building} color="text-amber-400" bgColor="bg-amber-500/15 border-amber-500/30" />
       </div>
 
-      <Tabs defaultValue="towers" className="space-y-4">
-        <TabsList className="bg-[#0A0A0A] border-[#374151]">
-          <TabsTrigger value="towers" className="cursor-pointer">Por Torre</TabsTrigger>
-          <TabsTrigger value="violations" className="cursor-pointer">Violaciones</TabsTrigger>
-          <TabsTrigger value="occupancy" className="cursor-pointer">Ocupación</TabsTrigger>
-          <TabsTrigger value="parking" className="cursor-pointer">Estacionamiento</TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2">
+          <CardHeader><CardTitle className="text-white">Vehículos por Torre</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={towerStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="towers">
-          <Card className="bg-[#1A1A1A] border-[#374151]">
-            <CardHeader><CardTitle className="text-white">Vehículos por Torre</CardTitle></CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={towerStats}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-                  <XAxis dataKey="tower" stroke="#94a3b8" />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip {...tooltipStyle} />
-                  <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <Card className="bg-[#1A1A1A] border-[#374151]">
+          <CardHeader><CardTitle className="text-white">Ocupación por Torre</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={occupancy}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="violations">
-          <Card className="bg-[#1A1A1A] border-[#374151]">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-400" />
-                Apartamentos con Más Vehículos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {violations.length === 0 ? (
-                <p className="text-slate-500 text-center py-8 text-sm">No hay violaciones registradas</p>
-              ) : (
-                <div className="space-y-2">
-                  {violations.map((v) => (
-                    <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-[#1A1A1A] rounded-lg">
-                      <div>
-                        <p className="text-white font-medium text-sm">Torre {v.tower} - Apto {v.apartment_code}</p>
-                        <p className="text-slate-500 text-xs">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
-                      </div>
-                      <span className="text-amber-400 font-bold text-sm">{v.vehicle_count} vehículos</span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="bg-[#1A1A1A] border-[#374151]">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Shield className="w-5 h-5 text-amber-400" />
+              Restricciones
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {violations.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay restricciones registradas</p>
+            ) : (
+              <div className="space-y-2">
+                {violations.map((v) => (
+                  <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                    <div>
+                      <p className="text-white font-medium text-sm">Torre {v.tower} - Apto {v.apartment_code}</p>
+                      <p className="text-slate-500 text-xs">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+                    <span className="text-amber-400 font-bold text-sm">{v.vehicle_count} vehículos</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-        <TabsContent value="occupancy">
-          <Card className="bg-[#1A1A1A] border-[#374151]">
-            <CardHeader><CardTitle className="text-white">Ocupación por Torre</CardTitle></CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={occupancy}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-                  <XAxis dataKey="tower" stroke="#94a3b8" />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip {...tooltipStyle} />
-                  <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="parking">
-          <Card className="bg-[#1A1A1A] border-[#374151]">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Activity className="w-5 h-5 text-orange-400" />
-                Vehículos con Más de 2 Días Estacionados
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {parkingAlerts.length === 0 ? (
-                <p className="text-slate-500 text-center py-8 text-sm">No hay alertas de estacionamiento</p>
-              ) : (
-                <div className="space-y-2">
-                  {parkingAlerts.map((a) => (
-                    <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-[#1A1A1A] rounded-lg">
-                      <div>
-                        <p className="text-white font-medium text-sm">{a.license_plate} — {a.owner_name}</p>
-                        <p className="text-slate-500 text-xs">Torre {a.tower} · Apto {a.apartment_code}</p>
-                      </div>
-                      <span className="text-orange-400 font-bold text-sm">{a.days_parked} días</span>
+        <Card className="bg-[#1A1A1A] border-[#374151]">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Activity className="w-5 h-5 text-orange-400" />
+              Vehículos con +1 Mes Estacionados
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {parkingAlerts.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay alertas de estacionamiento</p>
+            ) : (
+              <div className="space-y-2">
+                {parkingAlerts.map((a) => (
+                  <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                    <div>
+                      <p className="text-white font-medium text-sm">{a.license_plate} — {a.owner_name}</p>
+                      <p className="text-slate-500 text-xs">Torre {a.tower} · Apto {a.apartment_code}</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                    <span className="text-orange-400 font-bold text-sm">{a.days_parked} días</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
