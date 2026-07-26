@@ -266,6 +266,8 @@ export async function updateVehicleImages(vehicleId: string, images: string[]): 
 
 export async function searchVehicleByPlate(plate: string, licenseId?: string): Promise<Vehicle | null> {
 
+  const normalized = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
   let query = supabase
     .from('vehicles')
     .select('*')
@@ -273,7 +275,16 @@ export async function searchVehicleByPlate(plate: string, licenseId?: string): P
   query = addLicenseFilter(query, licenseId);
   const { data, error } = await query.maybeSingle();
   if (error) throw error;
-  return data;
+  if (data) return data;
+
+  let fallback = supabase
+    .from('vehicles')
+    .select('*');
+  fallback = addLicenseFilter(fallback, licenseId);
+  const { data: all, error: fbErr } = await fallback;
+  if (fbErr) throw fbErr;
+
+  return all?.find(v => v.license_plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === normalized) || null;
 }
 
 export async function registerAccess(vehicleId: string, accessType: AccessType, plateScanned?: string, licenseId?: string): Promise<AccessLog> {
