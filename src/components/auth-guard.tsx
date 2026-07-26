@@ -16,22 +16,22 @@ export function AuthGuard({ children }: AuthGuardProps) {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    const licenseActive = localStorage.getItem('license_active') === 'true';
+    const isAdmin = localStorage.getItem('is_admin') === 'true';
+    const isAuthenticated = licenseActive || isAdmin;
+
     if (PUBLIC_PATHS.includes(pathname)) {
-      setChecking(false);
+      if (isAuthenticated) {
+        router.replace('/');
+      } else {
+        setChecking(false);
+      }
       return;
     }
 
-    const licenseActive = localStorage.getItem('license_active') === 'true';
-    const licenseId = localStorage.getItem('license_id');
-    const isAdmin = localStorage.getItem('is_admin') === 'true';
-
-    if (!licenseActive && !isAdmin) {
+    if (!isAuthenticated) {
       router.replace('/activate');
       return;
-    }
-
-    if (isAdmin && !pathname.startsWith('/licenses') && !pathname.startsWith('/devices')) {
-      // Admin is ok anywhere
     }
 
     setChecking(false);

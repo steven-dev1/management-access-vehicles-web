@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Car, Key, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Car, Key, ArrowRight, AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
 import { activateLicense } from '@/lib/repository';
 
 export default function ActivatePage() {
@@ -97,9 +97,24 @@ export default function ActivatePage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-slate-500 text-sm">
-          Contacta al administrador si no tienes una licencia
-        </p>
+        <div className="text-center space-y-3">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-700" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-slate-900 px-3 text-slate-500">o</span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => router.push('/login')}
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm transition-colors"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            Soy administrador — Iniciar sesión
+          </button>
+        </div>
       </div>
     </div>
   );

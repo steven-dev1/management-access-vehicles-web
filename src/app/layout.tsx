@@ -3,8 +3,7 @@ import { Inter, Rubik } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { AuthGuard } from "@/components/auth-guard";
-import { Sidebar } from "@/components/sidebar";
-import { MobileHeader } from "@/components/mobile-header";
+import { AppShell } from "@/components/app-shell";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -34,13 +33,7 @@ export default function RootLayout({
       <body className="min-h-full bg-slate-950 text-white" style={{ fontFamily: 'var(--font-sans)' }}>
         <AuthProvider>
           <AuthGuard>
-            <div className="flex min-h-screen">
-              <Sidebar />
-              <MobileHeader />
-              <main className="flex-1 lg:ml-64 pt-16 lg:pt-0">
-                <div className="p-4 sm:p-6 lg:p-8">{children}</div>
-              </main>
-            </div>
+            <AppShell>{children}</AppShell>
           </AuthGuard>
         </AuthProvider>
       </body>
