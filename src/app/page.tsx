@@ -1,164 +1,193 @@
 'use client';
 
-import { AuthGuard } from '@/components/auth-guard';
-import { Sidebar } from '@/components/sidebar';
-import { MobileHeader } from '@/components/mobile-header';
-import { useAuth } from '@/lib/auth-context';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Car, Key, Smartphone, Clock } from 'lucide-react';
-
-interface Stats {
-  totalLicenses: number;
-  activeLicenses: number;
-  expiredLicenses: number;
-  totalDevices: number;
-}
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Car, Bike, Building, AlertTriangle, TrendingUp, Activity } from 'lucide-react';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from 'recharts';
+import { getDashboardStats, getTowerStats, getApartmentViolations, getOccupancyStats, getParkingAlerts } from '@/lib/repository';
+import { DashboardStats, TowerStats, ApartmentViolation, OccupancyStats, ParkingAlert } from '@/lib/types';
+import { getTowerColor } from '@/lib/constants';
 
 export default function DashboardPage() {
-  return (
-    <AuthGuard>
-      <DashboardLayout>
-        <DashboardContent />
-      </DashboardLayout>
-    </AuthGuard>
-  );
-}
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [towerStats, setTowerStats] = useState<TowerStats[]>([]);
+  const [violations, setViolations] = useState<ApartmentViolation[]>([]);
+  const [occupancy, setOccupancy] = useState<OccupancyStats[]>([]);
+  const [parkingAlerts, setParkingAlerts] = useState<ParkingAlert[]>([]);
+  const [loading, setLoading] = useState(true);
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    async function load() {
+      try {
+        const [s, tv, v, o, pa] = await Promise.all([
+          getDashboardStats(),
+          getTowerStats(),
+          getApartmentViolations(),
+          getOccupancyStats(),
+          getParkingAlerts(),
+        ]);
+        setStats(s);
+        setTowerStats(tv);
+        setViolations(v);
+        setOccupancy(o);
+        setParkingAlerts(pa);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  if (loading) return <LoadingSkeleton />;
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <MobileHeader />
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-white">Panel de Control</h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total Vehículos" value={stats?.total_vehicles || 0} icon={Car} color="text-blue-400" />
+        <StatCard title="Carros" value={stats?.total_cars || 0} icon={Car} color="text-green-400" />
+        <StatCard title="Motos" value={stats?.total_motorcycles || 0} icon={Bike} color="text-purple-400" />
+        <StatCard title="Torres" value={14} icon={Building} color="text-yellow-400" />
       </div>
+
+      <Tabs defaultValue="towers" className="space-y-4">
+        <TabsList className="bg-slate-800 border-slate-700">
+          <TabsTrigger value="towers">Por Torre</TabsTrigger>
+          <TabsTrigger value="violations">Violaciones</TabsTrigger>
+          <TabsTrigger value="occupancy">Ocupación</TabsTrigger>
+          <TabsTrigger value="parking">Estacionamiento</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="towers">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader><CardTitle className="text-white">Vehículos por Torre</CardTitle></CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={towerStats}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="tower" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+                  <Legend />
+                  <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="violations">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-yellow-400" />
+                Apartamentos con Más Vehículos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {violations.length === 0 ? (
+                <p className="text-slate-400 text-center py-8">No hay violaciones registradas</p>
+              ) : (
+                <div className="space-y-3">
+                  {violations.map((v) => (
+                    <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                      <div>
+                        <p className="text-white font-medium">Torre {v.tower} - Apto {v.apartment_code}</p>
+                        <p className="text-slate-400 text-sm">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
+                      </div>
+                      <span className="text-yellow-400 font-bold">{v.vehicle_count} vehículos</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="occupancy">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader><CardTitle className="text-white">Ocupación por Torre</CardTitle></CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={occupancy}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="tower" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+                  <Legend />
+                  <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="parking">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Activity className="w-5 h-5 text-orange-400" />
+                Vehículos con Más de 2 Días Estacionados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {parkingAlerts.length === 0 ? (
+                <p className="text-slate-400 text-center py-8">No hay alertas de estacionamiento</p>
+              ) : (
+                <div className="space-y-3">
+                  {parkingAlerts.map((a) => (
+                    <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                      <div>
+                        <p className="text-white font-medium">{a.license_plate} — {a.owner_name}</p>
+                        <p className="text-slate-400 text-sm">Torre {a.tower} · Apto {a.apartment_code}</p>
+                      </div>
+                      <span className="text-orange-400 font-bold">{a.days_parked} días</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
 
-function DashboardContent() {
-  const { session } = useAuth();
-  const router = useRouter();
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!session) return;
-    loadStats();
-  }, [session]);
-
-  const loadStats = async () => {
-    try {
-      const [licenses, devices] = await Promise.all([
-        supabase.from('licenses').select('*'),
-        supabase.from('license_devices').select('*').eq('active', true),
-      ]);
-
-      const allLicenses = licenses.data || [];
-      const now = new Date();
-
-      setStats({
-        totalLicenses: allLicenses.length,
-        activeLicenses: allLicenses.filter(l => l.active).length,
-        expiredLicenses: allLicenses.filter(l => l.active && l.trial_ends_at && new Date(l.trial_ends_at) < now).length,
-        totalDevices: (devices.data || []).length,
-      });
-    } catch {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Panel de Control</h1>
-          <p className="text-muted-foreground">Gestión administrativa</p>
+function StatCard({ title, value, icon: Icon, color }: { title: string; value: number; icon: any; color: string }) {
+  return (
+    <Card className="bg-slate-800/50 border-slate-700/50">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-slate-400 text-sm">{title}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
+          </div>
+          <Icon className={`w-8 h-8 ${color}`} />
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map(i => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
-                <div className="h-20" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+      </CardContent>
+    </Card>
+  );
+}
 
+function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Panel de Control</h1>
-        <p className="text-muted-foreground">Gestión administrativa</p>
+      <div className="h-8 bg-slate-800 rounded w-48 animate-pulse" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-24 bg-slate-800 rounded-lg animate-pulse" />
+        ))}
       </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => router.push('/licenses')}>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Key className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{stats?.totalLicenses || 0}</p>
-                <p className="text-sm text-muted-foreground">Licencias</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
-                <Car className="h-6 w-6 text-green-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{stats?.activeLicenses || 0}</p>
-                <p className="text-sm text-muted-foreground">Activas</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-500/10">
-                <Clock className="h-6 w-6 text-yellow-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{stats?.expiredLicenses || 0}</p>
-                <p className="text-sm text-muted-foreground">Expiradas</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => router.push('/devices')}>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10">
-                <Smartphone className="h-6 w-6 text-purple-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{stats?.totalDevices || 0}</p>
-                <p className="text-sm text-muted-foreground">Dispositivos</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <div className="h-96 bg-slate-800 rounded-lg animate-pulse" />
     </div>
   );
 }

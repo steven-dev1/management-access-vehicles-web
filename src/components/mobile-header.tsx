@@ -1,83 +1,90 @@
 'use client';
 
-import { useAuth } from '@/lib/auth-context';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
-import { LayoutDashboard, Key, Smartphone, LogOut, Car, Menu } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, Car, LayoutDashboard, Shield, Users, LogOut, Settings, Eye } from 'lucide-react';
 
-const navItems = [
+const adminLinks = [
   { href: '/', label: 'Panel', icon: LayoutDashboard },
-  { href: '/licenses', label: 'Licencias', icon: Key },
-  { href: '/devices', label: 'Dispositivos', icon: Smartphone },
+  { href: '/licenses', label: 'Licencias', icon: Shield },
+  { href: '/devices', label: 'Dispositivos', icon: Settings },
+];
+
+const userLinks = [
+  { href: '/', label: 'Panel', icon: LayoutDashboard },
+  { href: '/vehicles', label: 'Vehículos', icon: Car },
+  { href: '/access', label: 'Acceso', icon: Eye },
+  { href: '/visitors', label: 'Visitantes', icon: Users },
 ];
 
 export function MobileHeader() {
-  const pathname = usePathname();
-  const { signOut } = useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
+  const links = isAdmin ? adminLinks : userLinks;
+
+  const handleLogout = () => {
+    localStorage.removeItem('license_active');
+    localStorage.removeItem('license_id');
+    localStorage.removeItem('complex_name');
+    localStorage.removeItem('is_admin');
+    localStorage.removeItem('device_id');
+    router.push('/login');
+    setOpen(false);
+  };
 
   return (
-    <header className="flex items-center justify-between border-b bg-card px-4 py-3 lg:hidden">
-      <div className="flex items-center gap-3">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
-            <div className="flex h-full flex-col">
-              <div className="flex items-center gap-3 border-b p-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                  <Car className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-sm font-bold">Vehicle Access</h1>
-                  <p className="text-xs text-muted-foreground">Admin Panel</p>
-                </div>
-              </div>
-              <nav className="flex-1 space-y-1 p-3">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                        isActive
-                          ? 'bg-primary/10 text-primary'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
-              <div className="border-t p-3">
-                <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground" onClick={() => signOut()}>
-                  <LogOut className="h-4 w-4" />
-                  Cerrar sesión
-                </Button>
+    <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger>
+          <Button variant="ghost" size="icon" className="text-white">
+            <Menu className="w-5 h-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="bg-slate-900 border-slate-700 w-64 p-0" showCloseButton={false}>
+          <div className="flex flex-col h-full">
+            <div className="p-4 border-b border-slate-700">
+              <div className="flex items-center gap-2">
+                <Car className="w-5 h-5 text-blue-500" />
+                <span className="font-bold text-white">Vehicle Access</span>
               </div>
             </div>
-          </SheetContent>
-        </Sheet>
-        <div className="flex items-center gap-2">
-          <Car className="h-5 w-5 text-primary" />
-          <span className="font-bold">Vehicle Access</span>
-        </div>
+            <nav className="flex-1 p-2 space-y-1">
+              {links.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <button
+                    key={link.href}
+                    onClick={() => { router.push(link.href); setOpen(false); }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                  >
+                    <Icon className="w-4 h-4" />
+                    {link.label}
+                  </button>
+                );
+              })}
+            </nav>
+            <div className="p-2 border-t border-slate-700">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-red-400 hover:bg-slate-800 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <div className="flex items-center gap-2">
+        <Car className="w-5 h-5 text-blue-500" />
+        <span className="font-bold text-white">Vehicle Access</span>
       </div>
-      <Button variant="ghost" size="icon" onClick={() => signOut()}>
-        <LogOut className="h-4 w-4 text-muted-foreground" />
-      </Button>
-    </header>
+
+      <div className="w-10" />
+    </div>
   );
 }

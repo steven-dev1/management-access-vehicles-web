@@ -1,67 +1,75 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useAuth } from '@/lib/auth-context';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { LayoutDashboard, Key, Smartphone, LogOut, Car } from 'lucide-react';
+import { Car, LayoutDashboard, Shield, Users, LogOut, Settings, Eye } from 'lucide-react';
 
-const navItems = [
+const adminLinks = [
   { href: '/', label: 'Panel', icon: LayoutDashboard },
-  { href: '/licenses', label: 'Licencias', icon: Key },
-  { href: '/devices', label: 'Dispositivos', icon: Smartphone },
+  { href: '/licenses', label: 'Licencias', icon: Shield },
+  { href: '/devices', label: 'Dispositivos', icon: Settings },
+];
+
+const userLinks = [
+  { href: '/', label: 'Panel', icon: LayoutDashboard },
+  { href: '/vehicles', label: 'Vehículos', icon: Car },
+  { href: '/access', label: 'Acceso', icon: Eye },
+  { href: '/visitors', label: 'Visitantes', icon: Users },
 ];
 
 export function Sidebar() {
+  const router = useRouter();
   const pathname = usePathname();
-  const { signOut } = useAuth();
+  const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
+  const links = isAdmin ? adminLinks : userLinks;
+
+  const handleLogout = () => {
+    localStorage.removeItem('license_active');
+    localStorage.removeItem('license_id');
+    localStorage.removeItem('complex_name');
+    localStorage.removeItem('is_admin');
+    localStorage.removeItem('device_id');
+    router.push('/login');
+  };
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r bg-card lg:block">
-      <div className="flex h-full flex-col">
-        <div className="flex items-center gap-3 border-b p-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Car className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold">Vehicle Access</h1>
-            <p className="text-xs text-muted-foreground">Admin Panel</p>
-          </div>
-        </div>
-
-        <nav className="flex-1 space-y-1 p-3">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="border-t p-3">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-muted-foreground"
-            onClick={() => signOut()}
-          >
-            <LogOut className="h-4 w-4" />
-            Cerrar sesión
-          </Button>
-        </div>
+    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-slate-900 border-r border-slate-700">
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-700">
+        <Car className="w-6 h-6 text-blue-500" />
+        <span className="font-bold text-white text-lg">Vehicle Access</span>
       </div>
-    </aside>
+
+      <nav className="flex-1 p-3 space-y-1">
+        {links.map((link) => {
+          const Icon = link.icon;
+          const isActive = pathname === link.href;
+          return (
+            <button
+              key={link.href}
+              onClick={() => router.push(link.href)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-blue-600/20 text-blue-400'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {link.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="p-3 border-t border-slate-700">
+        <Button
+          variant="ghost"
+          onClick={handleLogout}
+          className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-slate-800"
+        >
+          <LogOut className="w-4 h-4" />
+          Cerrar Sesión
+        </Button>
+      </div>
+    </div>
   );
 }

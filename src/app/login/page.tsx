@@ -23,6 +23,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(email, password);
+      localStorage.setItem('is_admin', 'true');
+      localStorage.setItem('license_active', 'true');
       router.push('/');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Credenciales inválidas');
