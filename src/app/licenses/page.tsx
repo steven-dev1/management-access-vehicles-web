@@ -167,7 +167,7 @@ export default function LicensesPage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 rounded bg-[#0A0A0A] px-3 py-1.5 text-sm font-mono text-white">{license.license_key}</code>
+                    <code className="flex-1 text-sm font-mono text-[#3B82F6] font-bold tracking-wider">{license.license_key}</code>
                     <Button variant="ghost" size="icon" onClick={() => handleCopy(license.license_key)} className="text-[#9CA3AF] hover:text-white">
                       <Copy className="h-4 w-4" />
                     </Button>
