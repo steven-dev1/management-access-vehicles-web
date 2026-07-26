@@ -19,9 +19,23 @@ import {
 } from './types';
 import { generateApartmentCode, TOWERS, FLOORS, APARTMENTS_PER_FLOOR } from './constants';
 
-export async function getDashboardStats(): Promise<DashboardStats> {
+function getCurrentLicenseId(): string | null {
+  if (typeof window === 'undefined') return null;
+  if (localStorage.getItem('is_admin') === 'true') return null;
+  return localStorage.getItem('license_id') || null;
+}
+
+function addLicenseFilter(query: any, licenseId?: string | null) {
+  const lid = licenseId !== undefined ? licenseId : getCurrentLicenseId();
+  if (lid) return query.eq('license_id', lid);
+  return query;
+}
+
+export async function getDashboardStats(licenseId?: string): Promise<DashboardStats> {
   const supabase = createClient();
-  const { data: vehicles, error } = await supabase.from('vehicles').select('vehicle_type');
+  let query = supabase.from('vehicles').select('vehicle_type');
+  query = addLicenseFilter(query, licenseId);
+  const { data: vehicles, error } = await query;
   if (error) throw error;
 
   const total_cars = vehicles?.filter((v: any) => v.vehicle_type === 'car').length || 0;
@@ -34,9 +48,11 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   };
 }
 
-export async function getTowerStats(): Promise<TowerStats[]> {
+export async function getTowerStats(licenseId?: string): Promise<TowerStats[]> {
   const supabase = createClient();
-  const { data: vehicles, error } = await supabase.from('vehicles').select('tower, vehicle_type');
+  let query = supabase.from('vehicles').select('tower, vehicle_type');
+  query = addLicenseFilter(query, licenseId);
+  const { data: vehicles, error } = await query;
   if (error) throw error;
 
   return TOWERS.map((tower) => {
@@ -50,11 +66,11 @@ export async function getTowerStats(): Promise<TowerStats[]> {
   });
 }
 
-export async function getApartmentViolations(): Promise<ApartmentViolation[]> {
+export async function getApartmentViolations(licenseId?: string): Promise<ApartmentViolation[]> {
   const supabase = createClient();
-  const { data: vehicles, error } = await supabase
-    .from('vehicles')
-    .select('tower, floor, apartment, apartment_code, vehicle_type');
+  let query = supabase.from('vehicles').select('tower, floor, apartment, apartment_code, vehicle_type');
+  query = addLicenseFilter(query, licenseId);
+  const { data: vehicles, error } = await query;
   if (error) throw error;
 
   const grouped: Record<string, { count: number; cars: number; motorcycles: number; tower: number; floor: number; apartment: number }> = {};
@@ -81,12 +97,13 @@ export async function getApartmentViolations(): Promise<ApartmentViolation[]> {
     .sort((a, b) => b.vehicle_count - a.vehicle_count);
 }
 
-export async function getParkingAlerts(): Promise<ParkingAlert[]> {
+export async function getParkingAlerts(licenseId?: string): Promise<ParkingAlert[]> {
   const supabase = createClient();
-  const { data: logs, error } = await supabase
+  let logQuery = supabase
     .from('access_logs')
-    .select('vehicle_id, access_type, timestamp, vehicles!inner(id, license_plate, owner_name, tower, apartment_code, vehicle_type)')
-    .order('timestamp', { ascending: false });
+    .select('vehicle_id, access_type, timestamp, vehicles!inner(id, license_plate, owner_name, tower, apartment_code, vehicle_type)');
+  logQuery = addLicenseFilter(logQuery, licenseId);
+  const { data: logs, error } = await logQuery.order('timestamp', { ascending: false });
   if (error) throw error;
 
   const lastEntryByVehicle: Record<string, { entry: string; vehicle: any }> = {};
@@ -112,9 +129,11 @@ export async function getParkingAlerts(): Promise<ParkingAlert[]> {
     .sort((a, b) => b.days_parked - a.days_parked);
 }
 
-export async function getOccupancyStats(): Promise<OccupancyStats[]> {
+export async function getOccupancyStats(licenseId?: string): Promise<OccupancyStats[]> {
   const supabase = createClient();
-  const { data: vehicles, error } = await supabase.from('vehicles').select('tower, apartment_code, vehicle_type');
+  let query = supabase.from('vehicles').select('tower, apartment_code, vehicle_type');
+  query = addLicenseFilter(query, licenseId);
+  const { data: vehicles, error } = await query;
   if (error) throw error;
 
   return TOWERS.map((tower) => {
@@ -134,9 +153,10 @@ export async function getOccupancyStats(): Promise<OccupancyStats[]> {
   });
 }
 
-export async function getVehicles(filters?: FilterOptions, sort?: SortOption): Promise<Vehicle[]> {
+export async function getVehicles(filters?: FilterOptions, sort?: SortOption, licenseId?: string): Promise<Vehicle[]> {
   const supabase = createClient();
   let query = supabase.from('vehicles').select('*');
+  query = addLicenseFilter(query, licenseId);
 
   if (filters?.tower) query = query.eq('tower', filters.tower);
   if (filters?.apartment) query = query.eq('apartment', parseInt(filters.apartment));
@@ -159,23 +179,27 @@ export async function getVehicles(filters?: FilterOptions, sort?: SortOption): P
   return data || [];
 }
 
-export async function createVehicle(vehicleData: VehicleFormData): Promise<Vehicle> {
+export async function createVehicle(vehicleData: VehicleFormData, licenseId?: string): Promise<Vehicle> {
   const supabase = createClient();
+  const lid = licenseId || getCurrentLicenseId();
   const apartment_code = generateApartmentCode(vehicleData.floor, vehicleData.apartment);
+
+  const insertData: any = {
+    license_plate: vehicleData.license_plate.toUpperCase(),
+    vehicle_type: vehicleData.vehicle_type,
+    tower: vehicleData.tower,
+    floor: vehicleData.floor,
+    apartment: vehicleData.apartment,
+    apartment_code,
+    owner_name: vehicleData.owner_name,
+    is_restricted: vehicleData.is_restricted,
+    restriction_reason: vehicleData.restriction_reason || null,
+  };
+  if (lid) insertData.license_id = lid;
 
   const { data, error } = await supabase
     .from('vehicles')
-    .insert([{
-      license_plate: vehicleData.license_plate.toUpperCase(),
-      vehicle_type: vehicleData.vehicle_type,
-      tower: vehicleData.tower,
-      floor: vehicleData.floor,
-      apartment: vehicleData.apartment,
-      apartment_code,
-      owner_name: vehicleData.owner_name,
-      is_restricted: vehicleData.is_restricted,
-      restriction_reason: vehicleData.restriction_reason || null,
-    }])
+    .insert([insertData])
     .select()
     .single();
 
@@ -209,84 +233,99 @@ export async function deleteVehicle(id: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function searchVehicleByPlate(plate: string): Promise<Vehicle | null> {
+export async function searchVehicleByPlate(plate: string, licenseId?: string): Promise<Vehicle | null> {
   const supabase = createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from('vehicles')
     .select('*')
-    .ilike('license_plate', plate.toUpperCase())
-    .maybeSingle();
+    .ilike('license_plate', plate.toUpperCase());
+  query = addLicenseFilter(query, licenseId);
+  const { data, error } = await query.maybeSingle();
   if (error) throw error;
   return data;
 }
 
-export async function registerAccess(vehicleId: string, accessType: AccessType, plateScanned?: string): Promise<AccessLog> {
+export async function registerAccess(vehicleId: string, accessType: AccessType, plateScanned?: string, licenseId?: string): Promise<AccessLog> {
   const supabase = createClient();
+  const lid = licenseId || getCurrentLicenseId();
+
+  const insertData: any = {
+    vehicle_id: vehicleId,
+    access_type: accessType,
+    plate_scanned: plateScanned || null,
+    timestamp: new Date().toISOString(),
+  };
+  if (lid) insertData.license_id = lid;
+
   const { data, error } = await supabase
     .from('access_logs')
-    .insert([{
-      vehicle_id: vehicleId,
-      access_type: accessType,
-      plate_scanned: plateScanned || null,
-      timestamp: new Date().toISOString(),
-    }])
+    .insert([insertData])
     .select()
     .single();
   if (error) throw error;
   return data;
 }
 
-export async function getAccessHistory(limit?: number): Promise<AccessLog[]> {
+export async function getAccessHistory(limit?: number, licenseId?: string): Promise<AccessLog[]> {
   const supabase = createClient();
   let query = supabase
     .from('access_logs')
     .select('*, vehicles(*)')
     .order('timestamp', { ascending: false });
+  query = addLicenseFilter(query, licenseId);
   if (limit) query = query.limit(limit);
   const { data, error } = await query;
   if (error) throw error;
   return data || [];
 }
 
-export async function getTodayAccessLogs(): Promise<AccessLog[]> {
+export async function getTodayAccessLogs(licenseId?: string): Promise<AccessLog[]> {
   const supabase = createClient();
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('access_logs')
     .select('*, vehicles(*)')
     .gte('timestamp', startOfDay)
     .lt('timestamp', endOfDay)
     .order('timestamp', { ascending: false });
+  query = addLicenseFilter(query, licenseId);
+  const { data, error } = await query;
   if (error) throw error;
   return data || [];
 }
 
-export async function getVisitors(status?: VisitorStatus): Promise<Visitor[]> {
+export async function getVisitors(status?: VisitorStatus, licenseId?: string): Promise<Visitor[]> {
   const supabase = createClient();
   let query = supabase.from('visitors').select('*').order('created_at', { ascending: false });
+  query = addLicenseFilter(query, licenseId);
   if (status) query = query.eq('status', status);
   const { data, error } = await query;
   if (error) throw error;
   return data || [];
 }
 
-export async function createVisitor(visitorData: VisitorFormData): Promise<Visitor> {
+export async function createVisitor(visitorData: VisitorFormData, licenseId?: string): Promise<Visitor> {
   const supabase = createClient();
+  const lid = licenseId || getCurrentLicenseId();
+
+  const insertData: any = {
+    visitor_plate: visitorData.visitor_plate.toUpperCase(),
+    visitor_name: visitorData.visitor_name,
+    host_tower: visitorData.host_tower,
+    host_apartment_code: generateApartmentCode(visitorData.host_tower, parseInt(visitorData.host_apartment_code)),
+    host_owner_name: visitorData.host_owner_name,
+    purpose: visitorData.purpose || null,
+    expected_duration_hours: visitorData.expected_duration_hours,
+    status: 'expected' as VisitorStatus,
+  };
+  if (lid) insertData.license_id = lid;
+
   const { data, error } = await supabase
     .from('visitors')
-    .insert([{
-      visitor_plate: visitorData.visitor_plate.toUpperCase(),
-      visitor_name: visitorData.visitor_name,
-      host_tower: visitorData.host_tower,
-      host_apartment_code: generateApartmentCode(visitorData.host_tower, parseInt(visitorData.host_apartment_code)),
-      host_owner_name: visitorData.host_owner_name,
-      purpose: visitorData.purpose || null,
-      expected_duration_hours: visitorData.expected_duration_hours,
-      status: 'expected' as VisitorStatus,
-    }])
+    .insert([insertData])
     .select()
     .single();
   if (error) throw error;
