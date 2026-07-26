@@ -50,7 +50,7 @@ export default function VehiclesPage() {
         </Button>
       </div>
 
-      <Card className="bg-blue-950/40 border-blue-900/40">
+      <Card className="bg-slate-900/60 border-blue-800/30">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="relative sm:col-span-2">
@@ -87,7 +87,7 @@ export default function VehiclesPage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-blue-950/40 border-blue-900/40">
+      <Card className="bg-slate-900/60 border-blue-800/30">
         <CardContent className="p-0">
           {loading ? (
             <div className="p-8 text-center text-slate-400">Cargando...</div>

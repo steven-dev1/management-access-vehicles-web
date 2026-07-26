@@ -72,7 +72,7 @@ export default function VisitorsPage() {
       </div>
 
       {showForm && (
-        <Card className="bg-blue-950/40 border-blue-900/40">
+        <Card className="bg-slate-900/60 border-blue-800/30">
           <CardHeader><CardTitle className="text-white">Registrar Visitante</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={handleCreate} className="space-y-4">
@@ -125,7 +125,7 @@ export default function VisitorsPage() {
         </Card>
       )}
 
-      <Card className="bg-blue-950/40 border-blue-900/40">
+      <Card className="bg-slate-900/60 border-blue-800/30">
         <CardContent className="p-0">
           {loading ? (
             <div className="p-8 text-center text-slate-400">Cargando...</div>

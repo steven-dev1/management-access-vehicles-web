@@ -65,7 +65,7 @@ export default function AccessPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-white">Control de Acceso</h1>
 
-      <Card className="bg-blue-950/40 border-blue-900/40">
+      <Card className="bg-slate-900/60 border-blue-800/30">
         <CardHeader><CardTitle className="text-white flex items-center gap-2"><Search className="w-5 h-5" /> Buscar Vehículo</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
@@ -119,7 +119,7 @@ export default function AccessPage() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-blue-950/40 border-blue-900/40">
+        <Card className="bg-slate-900/60 border-blue-800/30">
           <CardHeader><CardTitle className="text-white flex items-center gap-2"><Clock className="w-5 h-5" /> Hoy ({todayLogs.length})</CardTitle></CardHeader>
           <CardContent className="max-h-96 overflow-y-auto space-y-2">
             {todayLogs.length === 0 ? (
@@ -137,7 +137,7 @@ export default function AccessPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-blue-950/40 border-blue-900/40">
+        <Card className="bg-slate-900/60 border-blue-800/30">
           <CardHeader><CardTitle className="text-white flex items-center gap-2"><Clock className="w-5 h-5" /> Historial Reciente</CardTitle></CardHeader>
           <CardContent className="max-h-96 overflow-y-auto space-y-2">
             {history.length === 0 ? (

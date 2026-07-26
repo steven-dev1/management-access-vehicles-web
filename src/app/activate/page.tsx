@@ -47,7 +47,7 @@ export default function ActivatePage() {
           <p className="text-slate-400">Sistema de Control de Acceso Vehicular</p>
         </div>
 
-        <Card className="bg-blue-950/40 border-blue-900/40 backdrop-blur">
+        <Card className="bg-slate-900/60 border-blue-800/30 backdrop-blur">
           <CardHeader className="text-center">
             <CardTitle className="text-white flex items-center justify-center gap-2">
               <Key className="w-5 h-5" />

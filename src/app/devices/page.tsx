@@ -46,13 +46,13 @@ export default function DevicesPage() {
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="animate-pulse bg-blue-950/40 border-blue-900/40">
+            <Card key={i} className="animate-pulse bg-slate-900/60 border-blue-800/30">
               <CardContent className="p-6"><div className="h-24" /></CardContent>
             </Card>
           ))}
         </div>
       ) : devices.length === 0 ? (
-        <Card className="bg-blue-950/40 border-blue-900/40">
+        <Card className="bg-slate-900/60 border-blue-800/30">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Smartphone className="mb-4 h-12 w-12 text-slate-600" />
             <p className="text-slate-400">Sin dispositivos registrados</p>
@@ -63,7 +63,7 @@ export default function DevicesPage() {
           {devices.map(device => {
             const isRecent = new Date(device.registered_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
             return (
-              <Card key={device.id} className="bg-blue-950/40 border-blue-900/40">
+              <Card key={device.id} className="bg-slate-900/60 border-blue-800/30">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">

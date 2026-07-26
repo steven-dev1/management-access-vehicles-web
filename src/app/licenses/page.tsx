@@ -103,13 +103,13 @@ export default function LicensesPage() {
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="animate-pulse bg-blue-950/40 border-blue-900/40">
+            <Card key={i} className="animate-pulse bg-slate-900/60 border-blue-800/30">
               <CardContent className="p-6"><div className="h-32" /></CardContent>
             </Card>
           ))}
         </div>
       ) : licenses.length === 0 ? (
-        <Card className="bg-blue-950/40 border-blue-900/40">
+        <Card className="bg-slate-900/60 border-blue-800/30">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Building2 className="mb-4 h-12 w-12 text-slate-600" />
             <p className="text-slate-400">Sin licencias registradas</p>
@@ -123,7 +123,7 @@ export default function LicensesPage() {
             const deviceCount = getDeviceCount(license.id);
 
             return (
-              <Card key={license.id} className="bg-blue-950/40 border-blue-900/40">
+              <Card key={license.id} className="bg-slate-900/60 border-blue-800/30">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
@@ -175,7 +175,7 @@ export default function LicensesPage() {
           {devices.map(device => {
             const isRecent = new Date(device.registered_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
             return (
-              <Card key={device.id} className="bg-blue-950/40 border-blue-900/40">
+              <Card key={device.id} className="bg-slate-900/60 border-blue-800/30">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
@@ -212,7 +212,7 @@ export default function LicensesPage() {
       {/* Create dialog */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="bg-blue-950/60 border-blue-900/50 w-full max-w-md mx-4">
+          <Card className="bg-slate-900/90 border-blue-800/40 w-full max-w-md mx-4 backdrop-blur-xl">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-white">Nueva Licencia</h2>
               <div className="space-y-2">
@@ -241,7 +241,7 @@ export default function LicensesPage() {
       {/* Extend dialog */}
       {showExtend && extendTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="bg-blue-950/60 border-blue-900/50 w-full max-w-md mx-4">
+          <Card className="bg-slate-900/90 border-blue-800/40 w-full max-w-md mx-4 backdrop-blur-xl">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-white">Reactivar Licencia</h2>
               <p className="text-slate-400 text-sm">Extender período de prueba de &quot;{extendTarget.complex_name}&quot;</p>

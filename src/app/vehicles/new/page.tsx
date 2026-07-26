@@ -49,7 +49,7 @@ export default function NewVehiclePage() {
         <h1 className="text-2xl font-bold text-white">Nuevo Vehículo</h1>
       </div>
 
-      <Card className="bg-blue-950/40 border-blue-900/40 max-w-2xl">
+      <Card className="bg-slate-900/60 border-blue-800/30 max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <p className="text-red-400 text-sm">{error}</p>}

@@ -376,6 +376,13 @@ export async function getLicenseDevices(licenseId: string): Promise<LicenseDevic
   return data || [];
 }
 
+export async function getAllDevices(): Promise<LicenseDevice[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase.from('license_devices').select('*').order('registered_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
 export async function activateLicense(licenseKey: string, deviceId: string, deviceName?: string): Promise<{ license: License; device: LicenseDevice }> {
   const supabase = createClient();
   const { data: license, error: licenseError } = await supabase
