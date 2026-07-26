@@ -209,7 +209,7 @@ function UserPanel() {
   if (loading) return <LoadingSkeleton />;
 
   return (
-    <div className="h-[calc(100vh-2rem)] lg:h-[calc(100vh-4rem)] flex flex-col gap-4 overflow-hidden">
+    <div className="h-full flex flex-col gap-4 overflow-hidden">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard title="Total Vehículos" value={stats?.total_vehicles || 0} icon={Car} color="text-[#3B82F6]" bgColor="bg-[#3B82F6]/15 border-[#3B82F6]/30" />
         <StatCard title="Carros" value={stats?.total_cars || 0} icon={Car} color="text-emerald-400" bgColor="bg-emerald-500/15 border-emerald-500/30" />
@@ -305,91 +305,91 @@ function UserPanel() {
       </div>
 
       <Dialog open={openSection === 'towers'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
-        <DialogContent className="bg-[#1A1A1A] border-[#374151] max-w-3xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-white">Vehículos por Torre</DialogTitle></DialogHeader>
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={towerStats}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-              <XAxis dataKey="tower" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
-              <Tooltip {...tooltipStyle} />
-              <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
-            {towerStats.map((t) => (
-              <div key={t.tower} className="flex items-center justify-between p-2 bg-[#0A0A0A] rounded text-sm">
-                <span className="text-white font-medium">Torre {t.tower}</span>
-                <span className="text-slate-400">{t.total_cars} carros · {t.total_motorcycles} motos</span>
-              </div>
-            ))}
+        <DialogContent className="bg-[#1A1A1A] border-[#374151] w-[92vw] h-[88vh] max-w-none p-6 flex flex-col">
+          <DialogHeader className="shrink-0"><DialogTitle className="text-white text-xl">Vehículos por Torre</DialogTitle></DialogHeader>
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={towerStats}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
+              {towerStats.map((t) => (
+                <div key={t.tower} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                  <span className="text-white font-medium text-sm">Torre {t.tower}</span>
+                  <span className="text-slate-400 text-sm">{t.total_cars}C · {t.total_motorcycles}M</span>
+                </div>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={openSection === 'occupancy'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
-        <DialogContent className="bg-[#1A1A1A] border-[#374151] max-w-3xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-white">Ocupación por Torre</DialogTitle></DialogHeader>
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={occupancy}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-              <XAxis dataKey="tower" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
-              <Tooltip {...tooltipStyle} />
-              <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
-            {occupancy.map((o) => (
-              <div key={o.tower} className="flex items-center justify-between p-2 bg-[#0A0A0A] rounded text-sm">
-                <span className="text-white font-medium">Torre {o.tower}</span>
-                <span className="text-emerald-400 font-bold">{o.occupancy_rate}%</span>
+        <DialogContent className="bg-[#1A1A1A] border-[#374151] w-[92vw] h-[88vh] max-w-none p-6 flex flex-col">
+          <DialogHeader className="shrink-0"><DialogTitle className="text-white text-xl">Ocupación por Torre</DialogTitle></DialogHeader>
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={occupancy}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
+                <XAxis dataKey="tower" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip {...tooltipStyle} />
+                <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
+              {occupancy.map((o) => (
+                <div key={o.tower} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+                  <span className="text-white font-medium text-sm">Torre {o.tower}</span>
+                  <span className="text-emerald-400 font-bold text-sm">{o.occupancy_rate}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={openSection === 'restrictions'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
+        <DialogContent className="bg-[#1A1A1A] border-[#374151] w-[80vw] h-[85vh] max-w-none p-6 flex flex-col">
+          <DialogHeader className="shrink-0"><DialogTitle className="text-white text-xl flex items-center gap-2"><Shield className="w-5 h-5 text-amber-400" /> Restricciones</DialogTitle></DialogHeader>
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
+            {violations.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay restricciones registradas</p>
+            ) : violations.map((v) => (
+              <div key={v.apartment_code} className="flex items-center justify-between p-4 bg-[#0A0A0A] rounded-lg">
+                <div>
+                  <p className="text-white font-medium">Torre {v.tower} - Apto {v.apartment_code}</p>
+                  <p className="text-slate-500 text-sm">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
+                </div>
+                <span className="text-amber-400 font-bold">{v.vehicle_count} vehículos</span>
               </div>
             ))}
           </div>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={openSection === 'restrictions'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
-        <DialogContent className="bg-[#1A1A1A] border-[#374151] max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-white flex items-center gap-2"><Shield className="w-5 h-5 text-amber-400" /> Restricciones</DialogTitle></DialogHeader>
-          {violations.length === 0 ? (
-            <p className="text-slate-500 text-center py-8 text-sm">No hay restricciones registradas</p>
-          ) : (
-            <div className="space-y-2">
-              {violations.map((v) => (
-                <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
-                  <div>
-                    <p className="text-white font-medium text-sm">Torre {v.tower} - Apto {v.apartment_code}</p>
-                    <p className="text-slate-500 text-xs">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
-                  </div>
-                  <span className="text-amber-400 font-bold text-sm">{v.vehicle_count} vehículos</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
       <Dialog open={openSection === 'parking'} onOpenChange={(o) => { if (!o) setOpenSection(null); }}>
-        <DialogContent className="bg-[#1A1A1A] border-[#374151] max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-white flex items-center gap-2"><Activity className="w-5 h-5 text-orange-400" /> Vehículos con +1 Mes Estacionados</DialogTitle></DialogHeader>
-          {parkingAlerts.length === 0 ? (
-            <p className="text-slate-500 text-center py-8 text-sm">No hay alertas de estacionamiento</p>
-          ) : (
-            <div className="space-y-2">
-              {parkingAlerts.map((a) => (
-                <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
-                  <div>
-                    <p className="text-white font-medium text-sm">{a.license_plate} — {a.owner_name}</p>
-                    <p className="text-slate-500 text-xs">Torre {a.tower} · Apto {a.apartment_code}</p>
-                  </div>
-                  <span className="text-orange-400 font-bold text-sm">{a.days_parked} días</span>
+        <DialogContent className="bg-[#1A1A1A] border-[#374151] w-[80vw] h-[85vh] max-w-none p-6 flex flex-col">
+          <DialogHeader className="shrink-0"><DialogTitle className="text-white text-xl flex items-center gap-2"><Activity className="w-5 h-5 text-orange-400" /> Vehículos con +1 Mes Estacionados</DialogTitle></DialogHeader>
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
+            {parkingAlerts.length === 0 ? (
+              <p className="text-slate-500 text-center py-8 text-sm">No hay alertas de estacionamiento</p>
+            ) : parkingAlerts.map((a) => (
+              <div key={a.vehicle_id} className="flex items-center justify-between p-4 bg-[#0A0A0A] rounded-lg">
+                <div>
+                  <p className="text-white font-medium">{a.license_plate} — {a.owner_name}</p>
+                  <p className="text-slate-500 text-sm">Torre {a.tower} · Apto {a.apartment_code}</p>
                 </div>
-              ))}
-            </div>
-          )}
+                <span className="text-orange-400 font-bold">{a.days_parked} días</span>
+              </div>
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
