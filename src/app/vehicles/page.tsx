@@ -108,7 +108,7 @@ export default function VehiclesPage() {
                 </TableHeader>
                 <TableBody>
                   {vehicles.map((v) => (
-                    <TableRow key={v.id} className="border-[#374151] hover:bg-[#1A1A1A]/50 cursor-pointer" onClick={() => router.push(`/vehicles/${v.id}`)}>
+                    <TableRow key={v.id} className="border-[#374151] hover:bg-[#2A2A2A] cursor-pointer transition-colors" onClick={() => router.push(`/vehicles/${v.id}`)}>
                       <TableCell className="font-mono font-bold text-white">{v.license_plate}</TableCell>
                       <TableCell>
                         <Badge variant={v.vehicle_type === 'car' ? 'default' : 'secondary'} className="gap-1">

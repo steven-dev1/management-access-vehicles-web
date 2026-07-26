@@ -48,6 +48,10 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
       alert(`Maximo ${MAX_IMAGES} fotos`);
       return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no puede superar 5MB');
+      return;
+    }
     setUploading(true);
     try {
       const url = await uploadVehicleImage(vehicle.id, file);
@@ -158,11 +162,12 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               </CardTitle>
               {images.length < MAX_IMAGES && (
                 <>
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleUpload} />
                   <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}
                     className="border-[#374151] text-white hover:bg-[#2A2A2A]">
                     <Upload className="w-4 h-4 mr-1" /> {uploading ? 'Subiendo...' : 'Subir foto'}
                   </Button>
+                  <span className="text-[10px] text-[#374151]">Max. 5MB</span>
                 </>
               )}
             </div>

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const { signIn } = useAuth();
@@ -74,6 +74,12 @@ export default function LoginPage() {
               {loading ? 'Ingresando...' : 'Ingresar'}
             </Button>
           </form>
+          <div className="mt-4 pt-4 border-t border-[#374151]">
+            <button onClick={() => router.push('/activate')} className="w-full flex items-center justify-center gap-2 text-sm text-[#9CA3AF] hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Volver a activar licencia
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
