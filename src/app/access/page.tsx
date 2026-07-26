@@ -1,24 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, LogIn, LogOut, Clock, Car, Bike, AlertCircle, CheckCircle } from 'lucide-react';
-import { searchVehicleByPlate, registerAccess, getTodayAccessLogs, getAccessHistory } from '@/lib/repository';
+import { Search, LogIn, LogOut, Clock, Car, Bike, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { searchVehicles, registerAccess, getTodayAccessLogs, getAccessHistory } from '@/lib/repository';
 import { Vehicle, AccessLog } from '@/lib/types';
 import { VEHICLE_TYPE_LABELS } from '@/lib/constants';
 
 export default function AccessPage() {
-  const [plate, setPlate] = useState('');
-  const [searchResult, setSearchResult] = useState<Vehicle | null>(null);
-  const [searched, setSearched] = useState(false);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<Vehicle[]>([]);
+  const [selected, setSelected] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [todayLogs, setTodayLogs] = useState<AccessLog[]>([]);
   const [history, setHistory] = useState<AccessLog[]>([]);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadLogs = async () => {
     const [today, hist] = await Promise.all([getTodayAccessLogs(), getAccessHistory(100)]);
@@ -28,31 +29,37 @@ export default function AccessPage() {
 
   useEffect(() => { loadLogs(); }, []);
 
-  const handleSearch = async () => {
-    if (!plate.trim()) return;
-    setLoading(true);
+  const handleSearch = useCallback((q: string) => {
+    setQuery(q);
+    setSelected(null);
     setMessage(null);
-    try {
-      const v = await searchVehicleByPlate(plate);
-      setSearchResult(v);
-      setSearched(true);
-      if (!v) setMessage({ type: 'error', text: `No se encontró vehículo con placa "${plate.toUpperCase()}"` });
-    } catch (e: any) {
-      setMessage({ type: 'error', text: e.message });
-    } finally {
-      setLoading(false);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (q.trim().length < 1) {
+      setResults([]);
+      return;
     }
-  };
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const r = await searchVehicles(q);
+        setResults(r);
+      } catch (e: any) {
+        setMessage({ type: 'error', text: e.message });
+      } finally {
+        setLoading(false);
+      }
+    }, 250);
+  }, []);
 
   const handleAccess = async (type: 'entry' | 'exit') => {
-    if (!searchResult) return;
+    if (!selected) return;
     setActionLoading(true);
     try {
-      await registerAccess(searchResult.id, type, plate.toUpperCase());
-      setMessage({ type: 'success', text: `${type === 'entry' ? 'Entrada' : 'Salida'} registrada para ${searchResult.license_plate}` });
-      setSearchResult(null);
-      setPlate('');
-      setSearched(false);
+      await registerAccess(selected.id, type, selected.license_plate);
+      setMessage({ type: 'success', text: `${type === 'entry' ? 'Entrada' : 'Salida'} registrada para ${selected.license_plate}` });
+      setSelected(null);
+      setQuery('');
+      setResults([]);
       loadLogs();
     } catch (e: any) {
       setMessage({ type: 'error', text: e.message });
@@ -68,17 +75,18 @@ export default function AccessPage() {
       <Card className="bg-[#1A1A1A] border-[#374151]">
         <CardHeader><CardTitle className="text-white flex items-center gap-2"><Search className="w-5 h-5" /> Buscar Vehículo</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2">
+          <div className="relative">
             <Input
-              placeholder="Ingrese la placa..."
-              value={plate}
-              onChange={(e) => setPlate(e.target.value.toUpperCase())}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="bg-[#1A1A1A] border-[#374151] text-white font-mono text-lg"
+              placeholder="Buscar por placa o propietario..."
+              value={query}
+              onChange={(e) => handleSearch(e.target.value.toUpperCase())}
+              className="bg-[#0A0A0A] border-[#374151] text-white font-mono text-lg pr-10"
             />
-            <Button onClick={handleSearch} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
-              <Search className="w-4 h-4" />
-            </Button>
+            {query && (
+              <button onClick={() => { setQuery(''); setResults([]); setSelected(null); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {message && (
@@ -88,28 +96,55 @@ export default function AccessPage() {
             </div>
           )}
 
-          {searchResult && (
-            <div className="p-4 bg-[#1A1A1A]/50 rounded-lg space-y-3">
+          {loading && <p className="text-slate-400 text-sm">Buscando...</p>}
+
+          {!selected && results.length > 0 && (
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {results.map((v) => (
+                <button
+                  key={v.id}
+                  onClick={() => { setSelected(v); setResults([]); }}
+                  className="w-full flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg hover:bg-[#2A2A2A] transition-colors cursor-pointer text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    {v.vehicle_type === 'car' ? <Car className="w-5 h-5 text-[#3B82F6]" /> : <Bike className="w-5 h-5 text-purple-400" />}
+                    <div>
+                      <p className="text-white font-mono font-bold">{v.license_plate}</p>
+                      <p className="text-slate-400 text-sm">{v.owner_name} · Torre {v.tower} · Apto {v.apartment_code}</p>
+                    </div>
+                  </div>
+                  <Badge variant={v.vehicle_type === 'car' ? 'default' : 'secondary'}>{VEHICLE_TYPE_LABELS[v.vehicle_type]}</Badge>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {!selected && query && !loading && results.length === 0 && (
+            <p className="text-slate-500 text-center py-4 text-sm">No se encontraron vehículos</p>
+          )}
+
+          {selected && (
+            <div className="p-4 bg-[#0A0A0A] rounded-lg space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {searchResult.vehicle_type === 'car' ? <Car className="w-6 h-6 text-[#3B82F6]" /> : <Bike className="w-6 h-6 text-purple-400" />}
+                  {selected.vehicle_type === 'car' ? <Car className="w-6 h-6 text-[#3B82F6]" /> : <Bike className="w-6 h-6 text-purple-400" />}
                   <div>
-                    <p className="text-white font-mono font-bold text-lg">{searchResult.license_plate}</p>
-                    <p className="text-slate-400 text-sm">{searchResult.owner_name} · Torre {searchResult.tower} · Apto {searchResult.apartment_code}</p>
+                    <p className="text-white font-mono font-bold text-lg">{selected.license_plate}</p>
+                    <p className="text-slate-400 text-sm">{selected.owner_name} · Torre {selected.tower} · Apto {selected.apartment_code}</p>
                   </div>
                 </div>
-                <Badge variant={searchResult.vehicle_type === 'car' ? 'default' : 'secondary'}>{VEHICLE_TYPE_LABELS[searchResult.vehicle_type]}</Badge>
+                <Badge variant={selected.vehicle_type === 'car' ? 'default' : 'secondary'}>{VEHICLE_TYPE_LABELS[selected.vehicle_type]}</Badge>
               </div>
-              {searchResult.is_restricted && (
+              {selected.is_restricted && (
                 <div className="p-2 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-sm">
-                  ⚠ Restringido: {searchResult.restriction_reason || 'Sin acceso'}
+                  Restringido: {selected.restriction_reason || 'Sin acceso'}
                 </div>
               )}
               <div className="flex gap-2">
-                <Button onClick={() => handleAccess('entry')} disabled={actionLoading || searchResult.is_restricted} className="flex-1 bg-green-600 hover:bg-green-700">
+                <Button onClick={() => handleAccess('entry')} disabled={actionLoading || selected.is_restricted} className="flex-1 bg-green-600 hover:bg-green-700">
                   <LogIn className="w-4 h-4 mr-2" /> Entrada
                 </Button>
-                <Button onClick={() => handleAccess('exit')} disabled={actionLoading || searchResult.is_restricted} variant="outline" className="flex-1 border-[#374151] text-white hover:bg-slate-700">
+                <Button onClick={() => handleAccess('exit')} disabled={actionLoading || selected.is_restricted} variant="outline" className="flex-1 border-[#374151] text-white hover:bg-slate-700">
                   <LogOut className="w-4 h-4 mr-2" /> Salida
                 </Button>
               </div>
@@ -125,7 +160,7 @@ export default function AccessPage() {
             {todayLogs.length === 0 ? (
               <p className="text-slate-400 text-center py-4">Sin registros hoy</p>
             ) : todayLogs.map((log) => (
-              <div key={log.id} className="flex items-center gap-3 p-2 bg-[#1A1A1A]/50 rounded-lg text-sm">
+              <div key={log.id} className="flex items-center gap-3 p-2 bg-[#0A0A0A] rounded-lg text-sm">
                 {log.access_type === 'entry' ? <LogIn className="w-4 h-4 text-green-400" /> : <LogOut className="w-4 h-4 text-red-400" />}
                 <div className="flex-1">
                   <span className="text-white font-mono">{(log as any).vehicles?.license_plate || 'N/A'}</span>
@@ -143,7 +178,7 @@ export default function AccessPage() {
             {history.length === 0 ? (
               <p className="text-slate-400 text-center py-4">Sin registros</p>
             ) : history.map((log) => (
-              <div key={log.id} className="flex items-center gap-3 p-2 bg-[#1A1A1A]/50 rounded-lg text-sm">
+              <div key={log.id} className="flex items-center gap-3 p-2 bg-[#0A0A0A] rounded-lg text-sm">
                 {log.access_type === 'entry' ? <LogIn className="w-4 h-4 text-green-400" /> : <LogOut className="w-4 h-4 text-red-400" />}
                 <div className="flex-1">
                   <span className="text-white font-mono">{(log as any).vehicles?.license_plate || 'N/A'}</span>

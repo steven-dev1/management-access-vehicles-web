@@ -287,6 +287,26 @@ export async function searchVehicleByPlate(plate: string, licenseId?: string): P
   return all?.find(v => v.license_plate.toUpperCase().replace(/[^A-Z0-9]/g, '') === normalized) || null;
 }
 
+export async function searchVehicles(query: string, licenseId?: string): Promise<Vehicle[]> {
+  const clean = query.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (clean.length < 1) return [];
+
+  let q = addLicenseFilter(supabase.from('vehicles').select('*'), licenseId);
+  q = q.or(`license_plate.ilike.%${query}%,owner_name.ilike.%${query}%`).order('license_plate').limit(15);
+  const { data, error } = await q;
+  if (error) throw error;
+  if (data && data.length > 0) return data;
+
+  let fb = addLicenseFilter(supabase.from('vehicles').select('*'), licenseId);
+  const { data: all, error: fbErr } = await fb;
+  if (fbErr) throw fbErr;
+
+  return all?.filter((v: any) => {
+    const normalized = v.license_plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    return normalized.includes(clean) || v.owner_name.toUpperCase().includes(clean);
+  }).slice(0, 15) || [];
+}
+
 export async function registerAccess(vehicleId: string, accessType: AccessType, plateScanned?: string, licenseId?: string): Promise<AccessLog> {
 
   const lid = licenseId || getCurrentLicenseId();
