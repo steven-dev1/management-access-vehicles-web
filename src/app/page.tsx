@@ -209,26 +209,26 @@ function UserPanel() {
   if (loading) return <LoadingSkeleton />;
 
   return (
-    <div className="h-full flex flex-col gap-4 overflow-hidden">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="h-full flex flex-col gap-3 overflow-hidden">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
         <StatCard title="Total Vehículos" value={stats?.total_vehicles || 0} icon={Car} color="text-[#3B82F6]" bgColor="bg-[#3B82F6]/15 border-[#3B82F6]/30" />
         <StatCard title="Carros" value={stats?.total_cars || 0} icon={Car} color="text-emerald-400" bgColor="bg-emerald-500/15 border-emerald-500/30" />
         <StatCard title="Motos" value={stats?.total_motorcycles || 0} icon={Bike} color="text-purple-400" bgColor="bg-purple-500/15 border-purple-500/30" />
         <StatCard title="Torres" value={14} icon={Building} color="text-amber-400" bgColor="bg-amber-500/15 border-amber-500/30" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0">
-        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2 flex flex-col min-h-0">
-          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
-            <CardTitle className="text-white">Vehículos por Torre</CardTitle>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 shrink-0 h-[220px]">
+        <Card className="bg-[#1A1A1A] border-[#374151] lg:col-span-2 flex flex-col overflow-hidden">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
+            <CardTitle className="text-white text-sm">Vehículos por Torre</CardTitle>
             <button onClick={() => setOpenSection('towers')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0 p-2">
+          <CardContent className="flex-1 min-h-0 p-2 pt-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={towerStats}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-                <XAxis dataKey="tower" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <XAxis dataKey="tower" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} />
                 <Tooltip {...tooltipStyle} />
                 <Bar dataKey="total_cars" name="Carros" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="total_motorcycles" name="Motos" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
@@ -237,17 +237,17 @@ function UserPanel() {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
-          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
-            <CardTitle className="text-white">Ocupación</CardTitle>
+        <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col overflow-hidden">
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
+            <CardTitle className="text-white text-sm">Ocupación</CardTitle>
             <button onClick={() => setOpenSection('occupancy')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0 p-2">
+          <CardContent className="flex-1 min-h-0 p-2 pt-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={occupancy}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(59,130,246,0.12)" />
-                <XAxis dataKey="tower" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <XAxis dataKey="tower" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }} />
                 <Tooltip {...tooltipStyle} />
                 <Bar dataKey="occupancy_rate" name="Ocupación %" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -256,20 +256,20 @@ function UserPanel() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 shrink-0 max-h-[45%]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-1 min-h-0">
         <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
-          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
-            <CardTitle className="text-white flex items-center gap-2">
-              <Shield className="w-5 h-5 text-amber-400" />
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
+            <CardTitle className="text-white flex items-center gap-2 text-sm">
+              <Shield className="w-4 h-4 text-amber-400" />
               Restricciones
             </CardTitle>
             <button onClick={() => setOpenSection('restrictions')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-2">
+          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-1.5 px-4 pb-4">
             {violations.length === 0 ? (
-              <p className="text-slate-500 text-center py-8 text-sm">No hay restricciones</p>
-            ) : violations.slice(0, 4).map((v) => (
-              <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+              <p className="text-slate-500 text-center py-4 text-sm">No hay restricciones</p>
+            ) : violations.slice(0, 5).map((v) => (
+              <div key={v.apartment_code} className="flex items-center justify-between p-2.5 bg-[#0A0A0A] rounded-lg">
                 <div>
                   <p className="text-white font-medium text-sm">Torre {v.tower} - Apto {v.apartment_code}</p>
                   <p className="text-slate-500 text-xs">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
@@ -281,18 +281,18 @@ function UserPanel() {
         </Card>
 
         <Card className="bg-[#1A1A1A] border-[#374151] flex flex-col min-h-0">
-          <CardHeader className="shrink-0 flex flex-row items-center justify-between">
-            <CardTitle className="text-white flex items-center gap-2">
-              <Activity className="w-5 h-5 text-orange-400" />
+          <CardHeader className="shrink-0 flex flex-row items-center justify-between py-2 px-4">
+            <CardTitle className="text-white flex items-center gap-2 text-sm">
+              <Activity className="w-4 h-4 text-orange-400" />
               Estacionamiento +1 Mes
             </CardTitle>
             <button onClick={() => setOpenSection('parking')} className="text-slate-400 hover:text-white transition-colors cursor-pointer"><Maximize2 className="w-4 h-4" /></button>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-2">
+          <CardContent className="flex-1 min-h-0 overflow-y-auto space-y-1.5 px-4 pb-4">
             {parkingAlerts.length === 0 ? (
-              <p className="text-slate-500 text-center py-8 text-sm">No hay alertas</p>
-            ) : parkingAlerts.slice(0, 4).map((a) => (
-              <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-[#0A0A0A] rounded-lg">
+              <p className="text-slate-500 text-center py-4 text-sm">No hay alertas</p>
+            ) : parkingAlerts.slice(0, 5).map((a) => (
+              <div key={a.vehicle_id} className="flex items-center justify-between p-2.5 bg-[#0A0A0A] rounded-lg">
                 <div>
                   <p className="text-white font-medium text-sm">{a.license_plate} — {a.owner_name}</p>
                   <p className="text-slate-500 text-xs">Torre {a.tower} · Apto {a.apartment_code}</p>
