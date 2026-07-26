@@ -209,7 +209,7 @@ function UserPanel() {
   if (loading) return <LoadingSkeleton />;
 
   return (
-    <div className="h-full grid grid-rows-[12vh_1fr_1fr] gap-3 overflow-hidden p-0.5">
+    <div className="h-full grid grid-rows-[12vh_1fr_1fr] gap-3 overflow-y-auto px-0.5 pt-0.5 pb-8">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard title="Total Vehículos" value={stats?.total_vehicles || 0} icon={Car} color="text-[#3B82F6]" bgColor="bg-[#3B82F6]/15 border-[#3B82F6]/30" />
         <StatCard title="Carros" value={stats?.total_cars || 0} icon={Car} color="text-emerald-400" bgColor="bg-emerald-500/15 border-emerald-500/30" />
