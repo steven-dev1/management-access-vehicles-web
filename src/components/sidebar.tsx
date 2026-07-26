@@ -33,9 +33,9 @@ export function Sidebar() {
   };
 
   return (
-    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-slate-900 border-r border-slate-700">
-      <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-700">
-        <Car className="w-6 h-6 text-blue-500" />
+    <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-blue-950/80 backdrop-blur-xl border-r border-blue-900/50">
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-blue-900/50">
+        <Car className="w-6 h-6 text-blue-400" />
         <span className="font-bold text-white text-lg">Vehicle Access</span>
       </div>
 
@@ -49,8 +49,8 @@ export function Sidebar() {
               onClick={() => router.push(link.href)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-blue-600/20 text-blue-400'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-blue-500/20 text-blue-300'
+                  : 'text-slate-300 hover:bg-blue-900/30 hover:text-white'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -60,11 +60,11 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-3 border-t border-slate-700">
+      <div className="p-3 border-t border-blue-900/50">
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-slate-800"
+          className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-blue-900/30"
         >
           <LogOut className="w-4 h-4" />
           Cerrar Sesión

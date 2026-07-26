@@ -58,7 +58,7 @@ export default function DashboardPage() {
       </div>
 
       <Tabs defaultValue="towers" className="space-y-4">
-        <TabsList className="bg-slate-800 border-slate-700">
+        <TabsList className="bg-blue-950/60 border-blue-900/50">
           <TabsTrigger value="towers">Por Torre</TabsTrigger>
           <TabsTrigger value="violations">Violaciones</TabsTrigger>
           <TabsTrigger value="occupancy">Ocupación</TabsTrigger>
@@ -66,7 +66,7 @@ export default function DashboardPage() {
         </TabsList>
 
         <TabsContent value="towers">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className="bg-blue-950/40 border-blue-900/40">
             <CardHeader><CardTitle className="text-white">Vehículos por Torre</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="violations">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className="bg-blue-950/40 border-blue-900/40">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-yellow-400" />
@@ -98,7 +98,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-3">
                   {violations.map((v) => (
-                    <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                    <div key={v.apartment_code} className="flex items-center justify-between p-3 bg-blue-900/20 rounded-lg">
                       <div>
                         <p className="text-white font-medium">Torre {v.tower} - Apto {v.apartment_code}</p>
                         <p className="text-slate-400 text-sm">{v.car_count} carro(s), {v.motorcycle_count} moto(s)</p>
@@ -113,7 +113,7 @@ export default function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="occupancy">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className="bg-blue-950/40 border-blue-900/40">
             <CardHeader><CardTitle className="text-white">Ocupación por Torre</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="parking">
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className="bg-blue-950/40 border-blue-900/40">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Activity className="w-5 h-5 text-orange-400" />
@@ -144,7 +144,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-3">
                   {parkingAlerts.map((a) => (
-                    <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                    <div key={a.vehicle_id} className="flex items-center justify-between p-3 bg-blue-900/20 rounded-lg">
                       <div>
                         <p className="text-white font-medium">{a.license_plate} — {a.owner_name}</p>
                         <p className="text-slate-400 text-sm">Torre {a.tower} · Apto {a.apartment_code}</p>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
 
 function StatCard({ title, value, icon: Icon, color }: { title: string; value: number; icon: any; color: string }) {
   return (
-    <Card className="bg-slate-800/50 border-slate-700/50">
+    <Card className="bg-blue-950/40 border-blue-900/40">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div>
@@ -181,13 +181,13 @@ function StatCard({ title, value, icon: Icon, color }: { title: string; value: n
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="h-8 bg-slate-800 rounded w-48 animate-pulse" />
+      <div className="h-8 bg-blue-950/60 rounded w-48 animate-pulse" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-24 bg-slate-800 rounded-lg animate-pulse" />
+          <div key={i} className="h-24 bg-blue-950/60 rounded-lg animate-pulse" />
         ))}
       </div>
-      <div className="h-96 bg-slate-800 rounded-lg animate-pulse" />
+      <div className="h-96 bg-blue-950/60 rounded-lg animate-pulse" />
     </div>
   );
 }

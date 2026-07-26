@@ -50,7 +50,7 @@ export default function VehiclesPage() {
         </Button>
       </div>
 
-      <Card className="bg-slate-800/50 border-slate-700/50">
+      <Card className="bg-blue-950/40 border-blue-900/40">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="relative sm:col-span-2">
@@ -60,13 +60,13 @@ export default function VehiclesPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-9 bg-slate-700/50 border-slate-600 text-white"
+                className="pl-9 bg-blue-900/30 border-blue-800/40 text-white"
               />
             </div>
             <select
               value={filters.tower?.toString() || 'all'}
               onChange={(e) => setFilters({ ...filters, tower: e.target.value === 'all' ? undefined : parseInt(e.target.value) })}
-              className="flex h-8 items-center rounded-lg border border-slate-600 bg-slate-700/50 px-3 py-1 text-sm text-white"
+              className="flex h-8 items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
             >
               <option value="all">Todas las Torres</option>
               {TOWERS.map((t) => <option key={t} value={t}>Torre {t}</option>)}
@@ -74,7 +74,7 @@ export default function VehiclesPage() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="flex h-8 items-center rounded-lg border border-slate-600 bg-slate-700/50 px-3 py-1 text-sm text-white"
+              className="flex h-8 items-center rounded-lg border border-blue-800/40 bg-blue-900/30 px-3 py-1 text-sm text-white"
             >
               <option value="newest">Más recientes</option>
               <option value="oldest">Más antiguos</option>
@@ -87,7 +87,7 @@ export default function VehiclesPage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-slate-800/50 border-slate-700/50">
+      <Card className="bg-blue-950/40 border-blue-900/40">
         <CardContent className="p-0">
           {loading ? (
             <div className="p-8 text-center text-slate-400">Cargando...</div>
@@ -97,7 +97,7 @@ export default function VehiclesPage() {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-slate-700">
+                  <TableRow className="border-blue-900/50">
                     <TableHead className="text-slate-400">Placa</TableHead>
                     <TableHead className="text-slate-400">Tipo</TableHead>
                     <TableHead className="text-slate-400">Torre</TableHead>
@@ -108,7 +108,7 @@ export default function VehiclesPage() {
                 </TableHeader>
                 <TableBody>
                   {vehicles.map((v) => (
-                    <TableRow key={v.id} className="border-slate-700/50 hover:bg-slate-700/20">
+                    <TableRow key={v.id} className="border-blue-900/40 hover:bg-blue-900/20">
                       <TableCell className="font-mono font-bold text-white">{v.license_plate}</TableCell>
                       <TableCell>
                         <Badge variant={v.vehicle_type === 'car' ? 'default' : 'secondary'} className="gap-1">

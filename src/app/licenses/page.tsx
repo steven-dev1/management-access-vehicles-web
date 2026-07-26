@@ -103,13 +103,13 @@ export default function LicensesPage() {
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="animate-pulse bg-slate-800/50 border-slate-700/50">
+            <Card key={i} className="animate-pulse bg-blue-950/40 border-blue-900/40">
               <CardContent className="p-6"><div className="h-32" /></CardContent>
             </Card>
           ))}
         </div>
       ) : licenses.length === 0 ? (
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-blue-950/40 border-blue-900/40">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Building2 className="mb-4 h-12 w-12 text-slate-600" />
             <p className="text-slate-400">Sin licencias registradas</p>
@@ -123,7 +123,7 @@ export default function LicensesPage() {
             const deviceCount = getDeviceCount(license.id);
 
             return (
-              <Card key={license.id} className="bg-slate-800/50 border-slate-700/50">
+              <Card key={license.id} className="bg-blue-950/40 border-blue-900/40">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function LicensesPage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 rounded bg-slate-700/50 px-3 py-1.5 text-sm font-mono text-white">{license.license_key}</code>
+                    <code className="flex-1 rounded bg-blue-900/30 px-3 py-1.5 text-sm font-mono text-white">{license.license_key}</code>
                     <Button variant="ghost" size="icon" onClick={() => handleCopy(license.license_key)} className="text-slate-400 hover:text-white">
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -175,11 +175,11 @@ export default function LicensesPage() {
           {devices.map(device => {
             const isRecent = new Date(device.registered_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
             return (
-              <Card key={device.id} className="bg-slate-800/50 border-slate-700/50">
+              <Card key={device.id} className="bg-blue-950/40 border-blue-900/40">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isRecent ? 'bg-green-500/10' : 'bg-slate-700/50'}`}>
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isRecent ? 'bg-green-500/10' : 'bg-blue-900/30'}`}>
                         <Smartphone className={`h-5 w-5 ${isRecent ? 'text-green-400' : 'text-slate-400'}`} />
                       </div>
                       <div>
@@ -212,21 +212,21 @@ export default function LicensesPage() {
       {/* Create dialog */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="bg-slate-800 border-slate-700 w-full max-w-md mx-4">
+          <Card className="bg-blue-950/60 border-blue-900/50 w-full max-w-md mx-4">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-white">Nueva Licencia</h2>
               <div className="space-y-2">
                 <Label className="text-slate-300">Nombre del conjunto</Label>
-                <Input placeholder="Ej: Villas del Encanto" value={formName} onChange={e => setFormName(e.target.value)} className="bg-slate-700/50 border-slate-600 text-white" />
+                <Input placeholder="Ej: Villas del Encanto" value={formName} onChange={e => setFormName(e.target.value)} className="bg-blue-900/30 border-slate-600 text-white" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-slate-300">Máx. dispositivos</Label>
-                  <Input type="number" value={formMaxDevices} onChange={e => setFormMaxDevices(e.target.value)} className="bg-slate-700/50 border-slate-600 text-white" />
+                  <Input type="number" value={formMaxDevices} onChange={e => setFormMaxDevices(e.target.value)} className="bg-blue-900/30 border-slate-600 text-white" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-300">Días de prueba</Label>
-                  <Input type="number" value={formTrialDays} onChange={e => setFormTrialDays(e.target.value)} className="bg-slate-700/50 border-slate-600 text-white" />
+                  <Input type="number" value={formTrialDays} onChange={e => setFormTrialDays(e.target.value)} className="bg-blue-900/30 border-slate-600 text-white" />
                 </div>
               </div>
               <div className="flex gap-2">
@@ -241,13 +241,13 @@ export default function LicensesPage() {
       {/* Extend dialog */}
       {showExtend && extendTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="bg-slate-800 border-slate-700 w-full max-w-md mx-4">
+          <Card className="bg-blue-950/60 border-blue-900/50 w-full max-w-md mx-4">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-white">Reactivar Licencia</h2>
               <p className="text-slate-400 text-sm">Extender período de prueba de &quot;{extendTarget.complex_name}&quot;</p>
               <div className="space-y-2">
                 <Label className="text-slate-300">Días de extensión</Label>
-                <Input type="number" value={extendDays} onChange={e => setExtendDays(e.target.value)} className="bg-slate-700/50 border-slate-600 text-white" />
+                <Input type="number" value={extendDays} onChange={e => setExtendDays(e.target.value)} className="bg-blue-900/30 border-slate-600 text-white" />
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setShowExtend(false)} className="flex-1 border-slate-600 text-white">Cancelar</Button>

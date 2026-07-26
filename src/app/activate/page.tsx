@@ -47,7 +47,7 @@ export default function ActivatePage() {
           <p className="text-slate-400">Sistema de Control de Acceso Vehicular</p>
         </div>
 
-        <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur">
+        <Card className="bg-blue-950/40 border-blue-900/40 backdrop-blur">
           <CardHeader className="text-center">
             <CardTitle className="text-white flex items-center justify-center gap-2">
               <Key className="w-5 h-5" />
@@ -74,7 +74,7 @@ export default function ActivatePage() {
                   placeholder="Ejemplo: LIC-XXXXXXX-XXXX"
                   value={licenseKey}
                   onChange={(e) => setLicenseKey(e.target.value)}
-                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500"
+                  className="bg-blue-900/30 border-blue-800/40 text-white placeholder:text-slate-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -100,7 +100,7 @@ export default function ActivatePage() {
         <div className="text-center space-y-3">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700" />
+              <div className="w-full border-t border-blue-900/50" />
             </div>
             <div className="relative flex justify-center text-xs">
               <span className="bg-slate-900 px-3 text-slate-500">o</span>

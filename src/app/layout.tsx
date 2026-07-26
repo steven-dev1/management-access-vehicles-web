@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${rubik.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full bg-slate-950 text-white" style={{ fontFamily: 'var(--font-sans)' }}>
+      <body className="min-h-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white" style={{ fontFamily: 'var(--font-sans)' }}>
         <AuthProvider>
           <AuthGuard>
             <AppShell>{children}</AppShell>

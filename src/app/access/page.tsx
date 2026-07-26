@@ -65,7 +65,7 @@ export default function AccessPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-white">Control de Acceso</h1>
 
-      <Card className="bg-slate-800/50 border-slate-700/50">
+      <Card className="bg-blue-950/40 border-blue-900/40">
         <CardHeader><CardTitle className="text-white flex items-center gap-2"><Search className="w-5 h-5" /> Buscar Vehículo</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
@@ -74,7 +74,7 @@ export default function AccessPage() {
               value={plate}
               onChange={(e) => setPlate(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="bg-slate-700/50 border-slate-600 text-white font-mono text-lg"
+              className="bg-blue-900/30 border-blue-800/40 text-white font-mono text-lg"
             />
             <Button onClick={handleSearch} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
               <Search className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function AccessPage() {
           )}
 
           {searchResult && (
-            <div className="p-4 bg-slate-700/30 rounded-lg space-y-3">
+            <div className="p-4 bg-blue-900/20 rounded-lg space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {searchResult.vehicle_type === 'car' ? <Car className="w-6 h-6 text-blue-400" /> : <Bike className="w-6 h-6 text-purple-400" />}
@@ -109,7 +109,7 @@ export default function AccessPage() {
                 <Button onClick={() => handleAccess('entry')} disabled={actionLoading || searchResult.is_restricted} className="flex-1 bg-green-600 hover:bg-green-700">
                   <LogIn className="w-4 h-4 mr-2" /> Entrada
                 </Button>
-                <Button onClick={() => handleAccess('exit')} disabled={actionLoading || searchResult.is_restricted} variant="outline" className="flex-1 border-slate-600 text-white hover:bg-slate-700">
+                <Button onClick={() => handleAccess('exit')} disabled={actionLoading || searchResult.is_restricted} variant="outline" className="flex-1 border-blue-800/40 text-white hover:bg-slate-700">
                   <LogOut className="w-4 h-4 mr-2" /> Salida
                 </Button>
               </div>
@@ -119,13 +119,13 @@ export default function AccessPage() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-blue-950/40 border-blue-900/40">
           <CardHeader><CardTitle className="text-white flex items-center gap-2"><Clock className="w-5 h-5" /> Hoy ({todayLogs.length})</CardTitle></CardHeader>
           <CardContent className="max-h-96 overflow-y-auto space-y-2">
             {todayLogs.length === 0 ? (
               <p className="text-slate-400 text-center py-4">Sin registros hoy</p>
             ) : todayLogs.map((log) => (
-              <div key={log.id} className="flex items-center gap-3 p-2 bg-slate-700/20 rounded-lg text-sm">
+              <div key={log.id} className="flex items-center gap-3 p-2 bg-blue-900/15 rounded-lg text-sm">
                 {log.access_type === 'entry' ? <LogIn className="w-4 h-4 text-green-400" /> : <LogOut className="w-4 h-4 text-red-400" />}
                 <div className="flex-1">
                   <span className="text-white font-mono">{(log as any).vehicles?.license_plate || 'N/A'}</span>
@@ -137,13 +137,13 @@ export default function AccessPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/50 border-slate-700/50">
+        <Card className="bg-blue-950/40 border-blue-900/40">
           <CardHeader><CardTitle className="text-white flex items-center gap-2"><Clock className="w-5 h-5" /> Historial Reciente</CardTitle></CardHeader>
           <CardContent className="max-h-96 overflow-y-auto space-y-2">
             {history.length === 0 ? (
               <p className="text-slate-400 text-center py-4">Sin registros</p>
             ) : history.map((log) => (
-              <div key={log.id} className="flex items-center gap-3 p-2 bg-slate-700/20 rounded-lg text-sm">
+              <div key={log.id} className="flex items-center gap-3 p-2 bg-blue-900/15 rounded-lg text-sm">
                 {log.access_type === 'entry' ? <LogIn className="w-4 h-4 text-green-400" /> : <LogOut className="w-4 h-4 text-red-400" />}
                 <div className="flex-1">
                   <span className="text-white font-mono">{(log as any).vehicles?.license_plate || 'N/A'}</span>
