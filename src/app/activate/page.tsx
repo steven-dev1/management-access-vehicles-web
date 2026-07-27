@@ -43,7 +43,7 @@ export default function ActivatePage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600/20 mb-4">
             <Car className="w-8 h-8 text-[#3B82F6]" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Vehicle Access</h1>
+          <h1 className="text-3xl font-bold text-white">Control de Acceso Vehicular</h1>
           <p className="text-slate-400">Sistema de Control de Acceso Vehicular</p>
         </div>
 

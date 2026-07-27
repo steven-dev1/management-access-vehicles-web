@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Car, LayoutDashboard, Shield, Users, LogOut, Settings, Eye } from 'lucide-react';
@@ -20,8 +21,13 @@ const userLinks = [
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const [complexName, setComplexName] = useState('');
   const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
   const links = isAdmin ? adminLinks : userLinks;
+
+  useEffect(() => {
+    setComplexName(localStorage.getItem('complex_name') || 'Vehicle Access');
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('license_active');
@@ -35,7 +41,7 @@ export function Sidebar() {
     <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-[#0A0A0A] border-r border-[#374151]">
       <div className="flex items-center gap-2 px-6 py-4 border-b border-[#374151]">
         <Car className="w-6 h-6 text-[#3B82F6]" />
-        <span className="font-bold text-white text-lg">Vehicle Access</span>
+        <span className="font-bold text-white text-lg">{complexName}</span>
       </div>
 
       <nav className="flex-1 p-3 space-y-1">

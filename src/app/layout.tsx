@@ -16,7 +16,7 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
-  title: "Vehicle Access",
+  title: "Control de Acceso Vehicular",
   description: "Sistema de Control de Acceso Vehicular",
 };
 

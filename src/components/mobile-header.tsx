@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Car, LayoutDashboard, Shield, Users, LogOut, Settings, Eye } from 'lucide-react';
@@ -21,8 +21,13 @@ const userLinks = [
 export function MobileHeader() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [complexName, setComplexName] = useState('');
   const isAdmin = typeof window !== 'undefined' && localStorage.getItem('is_admin') === 'true';
   const links = isAdmin ? adminLinks : userLinks;
+
+  useEffect(() => {
+    setComplexName(localStorage.getItem('complex_name') || 'Vehicle Access');
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('license_active');
@@ -46,7 +51,7 @@ export function MobileHeader() {
             <div className="p-4 border-b border-[#374151]">
               <div className="flex items-center gap-2">
                 <Car className="w-5 h-5 text-[#3B82F6]" />
-                <span className="font-bold text-white">Vehicle Access</span>
+                <span className="font-bold text-white">{complexName}</span>
               </div>
             </div>
             <nav className="flex-1 p-2 space-y-1">
@@ -79,7 +84,7 @@ export function MobileHeader() {
 
       <div className="flex items-center gap-2">
         <Car className="w-5 h-5 text-[#3B82F6]" />
-        <span className="font-bold text-white">Vehicle Access</span>
+        <span className="font-bold text-white">{complexName}</span>
       </div>
 
       <div className="w-10" />
