@@ -20,7 +20,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Sidebar />
       <MobileHeader />
       <main className="flex-1 lg:ml-64 pt-16 lg:pt-0 overflow-hidden flex flex-col">
-        <div className="flex-1 min-h-0 p-4 sm:p-6 lg:p-8 overflow-hidden">{children}</div>
+        <div className="flex-1 min-h-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">{children}</div>
       </main>
     </div>
   );

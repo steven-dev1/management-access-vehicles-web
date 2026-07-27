@@ -9,6 +9,7 @@ import { Search, LogIn, LogOut, Clock, Car, Bike, AlertCircle, CheckCircle, X } 
 import { searchVehicles, registerAccess, getTodayAccessLogs, getAccessHistory } from '@/lib/repository';
 import { Vehicle, AccessLog } from '@/lib/types';
 import { VEHICLE_TYPE_LABELS } from '@/lib/constants';
+import { useRealtime } from '@/hooks/useRealtime';
 
 export default function AccessPage() {
   const [query, setQuery] = useState('');
@@ -28,6 +29,8 @@ export default function AccessPage() {
   };
 
   useEffect(() => { loadLogs(); }, []);
+
+  useRealtime(['access_logs', 'vehicles'], loadLogs);
 
   const handleSearch = useCallback((q: string) => {
     setQuery(q);
@@ -69,8 +72,8 @@ export default function AccessPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-white">Control de Acceso</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-white">Control de Acceso</h1>
 
       <Card className="bg-[#1A1A1A] border-[#374151]">
         <CardHeader><CardTitle className="text-white flex items-center gap-2"><Search className="w-5 h-5" /> Buscar Vehículo</CardTitle></CardHeader>
@@ -125,7 +128,7 @@ export default function AccessPage() {
 
           {selected && (
             <div className="p-4 bg-[#0A0A0A] rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-3">
                   {selected.vehicle_type === 'car' ? <Car className="w-6 h-6 text-[#3B82F6]" /> : <Bike className="w-6 h-6 text-purple-400" />}
                   <div>
@@ -133,7 +136,7 @@ export default function AccessPage() {
                     <p className="text-slate-400 text-sm">{selected.owner_name} · Torre {selected.tower} · Apto {selected.apartment_code}</p>
                   </div>
                 </div>
-                <Badge variant={selected.vehicle_type === 'car' ? 'default' : 'secondary'}>{VEHICLE_TYPE_LABELS[selected.vehicle_type]}</Badge>
+                <Badge variant={selected.vehicle_type === 'car' ? 'default' : 'secondary'} className="self-start sm:self-auto">{VEHICLE_TYPE_LABELS[selected.vehicle_type]}</Badge>
               </div>
               {selected.is_restricted && (
                 <div className="p-2 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-sm">

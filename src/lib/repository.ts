@@ -131,24 +131,26 @@ export async function getParkingAlerts(licenseId?: string): Promise<ParkingAlert
 
 export async function getOccupancyStats(licenseId?: string): Promise<OccupancyStats[]> {
 
-  let query = supabase.from('vehicles').select('tower, apartment_code, vehicle_type');
+  const MAX_VEHICLES_PER_APARTMENT = 2;
+  const totalApts = FLOORS.length * APARTMENTS_PER_FLOOR.length;
+  const maxPerTower = totalApts * MAX_VEHICLES_PER_APARTMENT;
+
+  let query = supabase.from('vehicles').select('tower, vehicle_type');
   query = addLicenseFilter(query, licenseId);
   const { data: vehicles, error } = await query;
   if (error) throw error;
 
   return TOWERS.map((tower) => {
     const towerVehicles = vehicles?.filter((v: any) => v.tower === tower) || [];
-    const occupiedApts = new Set(towerVehicles.map((v: any) => v.apartment_code));
-    const totalApts = FLOORS.length * APARTMENTS_PER_FLOOR.length;
-
     return {
       tower,
       total_apartments: totalApts,
-      occupied_apartments: occupiedApts.size,
+      occupied_apartments: 0,
       total_vehicles: towerVehicles.length,
+      max_vehicles: maxPerTower,
       car_count: towerVehicles.filter((v: any) => v.vehicle_type === 'car').length,
       motorcycle_count: towerVehicles.filter((v: any) => v.vehicle_type === 'motorcycle').length,
-      occupancy_rate: Math.round((occupiedApts.size / totalApts) * 100),
+      occupancy_rate: Math.round((towerVehicles.length / maxPerTower) * 100),
     };
   });
 }

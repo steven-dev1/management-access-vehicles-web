@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Car, LayoutDashboard, Shield, Users, LogOut, Settings, Eye } from 'lucide-react';
 
@@ -38,9 +37,9 @@ export function MobileHeader() {
     <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A] border-b border-[#374151] px-4 py-3 flex items-center justify-between">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
-          <Button variant="ghost" size="icon" className="text-white">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-md text-white hover:bg-[#1A1A1A] transition-colors cursor-pointer">
             <Menu className="w-5 h-5" />
-          </Button>
+          </span>
         </SheetTrigger>
         <SheetContent side="left" className="bg-[#0A0A0A] border-[#374151] w-64 p-0" showCloseButton={false}>
           <div className="flex flex-col h-full">
