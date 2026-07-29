@@ -3,12 +3,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getLicenses, getLicenseDevices, createLicense, updateLicense, setPermanent, extendLicense, toggleLicenseDevice, deleteLicense } from '@/lib/repository';
 import type { License, LicenseDevice } from '@/lib/types';
+import { maskLicenseKey } from '@/lib/security';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Copy, Trash2, Power, PowerOff, RefreshCw, Building2, Smartphone, Calendar, Key, Edit3, Check, X, Infinity } from 'lucide-react';
+import { Plus, Copy, Trash2, Power, PowerOff, RefreshCw, Building2, Smartphone, Calendar, Key, Edit3, Check, X, Infinity, Eye } from 'lucide-react';
 
 export default function LicensesPage() {
   const [licenses, setLicenses] = useState<License[]>([]);
@@ -16,6 +17,7 @@ export default function LicensesPage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [showExtend, setShowExtend] = useState(false);
+  const [revealedKeys, setRevealedKeys] = useState<Set<string>>(new Set());
   const [extendTarget, setExtendTarget] = useState<License | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editMaxDevices, setEditMaxDevices] = useState('');
@@ -174,7 +176,19 @@ export default function LicensesPage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 text-sm font-mono text-[#3B82F6] font-bold tracking-wider">{license.license_key}</code>
+                    <code className="flex-1 text-sm font-mono text-[#3B82F6] font-bold tracking-wider">
+                      {revealedKeys.has(license.id) ? license.license_key : maskLicenseKey(license.license_key)}
+                    </code>
+                    <Button variant="ghost" size="icon" onClick={() => {
+                      setRevealedKeys(prev => {
+                        const next = new Set(prev);
+                        if (next.has(license.id)) next.delete(license.id);
+                        else next.add(license.id);
+                        return next;
+                      });
+                    }} className="text-[#9CA3AF] hover:text-white" title={revealedKeys.has(license.id) ? 'Ocultar' : 'Revelar'}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCopy(license.license_key)} className="text-[#9CA3AF] hover:text-white">
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -285,7 +299,7 @@ export default function LicensesPage() {
                   <div className="mt-4 space-y-2 text-sm text-[#9CA3AF]">
                     <div className="flex items-center gap-2">
                       <Key className="h-3.5 w-3.5" />
-                      <code className="font-mono text-xs">{licenses.find(l => l.id === device.license_id)?.license_key}</code>
+                      <code className="font-mono text-xs">{maskLicenseKey(licenses.find(l => l.id === device.license_id)?.license_key || '')}</code>
                     </div>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5" />
@@ -308,7 +322,7 @@ export default function LicensesPage() {
               <h2 className="text-lg font-bold text-white">Nueva Licencia</h2>
               <div className="space-y-2">
                 <Label className="text-[#9CA3AF]">Nombre del conjunto</Label>
-                <Input placeholder="Ej: Villas del Encanto" value={formName} onChange={e => setFormName(e.target.value)} className="bg-[#0A0A0A] border-[#374151] text-white" />
+                <Input placeholder="Ej: Villas del Encanto" value={formName} onChange={e => setFormName(e.target.value.slice(0, 100))} className="bg-[#0A0A0A] border-[#374151] text-white" maxLength={100} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

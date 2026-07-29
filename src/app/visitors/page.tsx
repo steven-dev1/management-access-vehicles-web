@@ -82,11 +82,11 @@ export default function VisitorsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-slate-300">Placa</Label>
-                  <Input value={form.visitor_plate} onChange={(e) => setForm({ ...form, visitor_plate: e.target.value.toUpperCase() })} className="bg-[#1A1A1A] border-[#374151] text-white" required />
+                  <Input value={form.visitor_plate} onChange={(e) => setForm({ ...form, visitor_plate: e.target.value.toUpperCase().slice(0, 10) })} className="bg-[#1A1A1A] border-[#374151] text-white" maxLength={10} required />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-300">Nombre</Label>
-                  <Input value={form.visitor_name} onChange={(e) => setForm({ ...form, visitor_name: e.target.value })} className="bg-[#1A1A1A] border-[#374151] text-white" required />
+                  <Input value={form.visitor_name} onChange={(e) => setForm({ ...form, visitor_name: e.target.value.slice(0, 100) })} className="bg-[#1A1A1A] border-[#374151] text-white" maxLength={100} required />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -113,7 +113,7 @@ export default function VisitorsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-slate-300">Propósito</Label>
-                  <Input value={form.purpose || ''} onChange={(e) => setForm({ ...form, purpose: e.target.value })} className="bg-[#1A1A1A] border-[#374151] text-white" />
+                  <Input value={form.purpose || ''} onChange={(e) => setForm({ ...form, purpose: e.target.value.slice(0, 100) })} className="bg-[#1A1A1A] border-[#374151] text-white" maxLength={100} />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-300">Duración (horas)</Label>

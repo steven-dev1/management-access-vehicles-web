@@ -30,6 +30,12 @@ export function Sidebar() {
   }, []);
 
   const handleLogout = () => {
+    // Clear cookies
+    document.cookie = 'license_active=; path=/; max-age=0';
+    document.cookie = 'license_id=; path=/; max-age=0';
+    document.cookie = 'complex_name=; path=/; max-age=0';
+    document.cookie = 'is_admin=; path=/; max-age=0';
+    // Clear localStorage
     localStorage.removeItem('license_active');
     localStorage.removeItem('license_id');
     localStorage.removeItem('complex_name');
@@ -40,7 +46,7 @@ export function Sidebar() {
   return (
     <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-[#0A0A0A] border-r border-[#374151]">
       <div className="flex items-center gap-2 px-6 py-4 border-b border-[#374151]">
-        <Car className="w-6 h-6 text-[#3B82F6]" />
+        <img src="/favicon.png" alt="Logo" className="w-7 h-7 rounded-md" />
         <span className="font-bold text-white text-lg">{complexName}</span>
       </div>
 

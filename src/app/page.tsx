@@ -12,6 +12,7 @@ import { getDashboardStats, getTowerStats, getApartmentViolations, getOccupancyS
 import { DashboardStats, TowerStats, ApartmentViolation, OccupancyStats, ParkingAlert, License, LicenseDevice } from '@/lib/types';
 import { getTowerColor } from '@/lib/constants';
 import { useRealtime } from '@/hooks/useRealtime';
+import { maskLicenseKey, maskDeviceId } from '@/lib/security';
 
 const tooltipStyle = {
   contentStyle: {
@@ -129,7 +130,7 @@ function AdminPanel() {
                       </div>
                       <div>
                         <p className="text-white text-sm font-medium">{lic.complex_name}</p>
-                        <p className="text-slate-500 text-xs font-mono">{lic.license_key}</p>
+                        <p className="text-slate-500 text-xs font-mono">{maskLicenseKey(lic.license_key)}</p>
                       </div>
                     </div>
                     <span className={`text-xs font-semibold px-2 py-1 rounded-md ${badge.cls}`}>{badge.label}</span>
@@ -161,7 +162,7 @@ function AdminPanel() {
                     </div>
                     <div>
                       <p className="text-white text-sm font-medium">{dev.device_name || 'Desconocido'}</p>
-                      <p className="text-slate-500 text-xs">ID: {dev.device_id.substring(0, 12)}...</p>
+                      <p className="text-slate-500 text-xs">ID: {maskDeviceId(dev.device_id)}</p>
                     </div>
                   </div>
                   <span className="text-slate-500 text-xs">{new Date(dev.registered_at).toLocaleDateString('es-ES')}</span>

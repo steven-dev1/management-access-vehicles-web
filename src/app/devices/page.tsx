@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getLicenses, getLicenseDevices, toggleLicenseDevice } from '@/lib/repository';
 import type { License, LicenseDevice } from '@/lib/types';
+import { maskLicenseKey, maskDeviceId } from '@/lib/security';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Smartphone, X, Calendar, Key, Power, PowerOff } from 'lucide-react';
@@ -82,14 +83,14 @@ export default function DevicesPage() {
                   <div className="mt-4 space-y-2 text-sm text-slate-400">
                     <div className="flex items-center gap-2">
                       <Key className="h-3.5 w-3.5" />
-                      <code className="font-mono text-xs">{device.license_key}</code>
+                      <code className="font-mono text-xs">{maskLicenseKey(device.license_key || '')}</code>
                     </div>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5" />
                       <span>{new Date(device.registered_at).toLocaleDateString('es-CO')}</span>
                     </div>
                   </div>
-                  <p className="mt-3 truncate text-xs text-slate-600">ID: {device.device_id}</p>
+                  <p className="mt-3 truncate text-xs text-slate-600">ID: {maskDeviceId(device.device_id)}</p>
                 </CardContent>
               </Card>
             );

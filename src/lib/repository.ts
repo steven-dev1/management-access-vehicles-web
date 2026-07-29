@@ -211,27 +211,36 @@ export async function createVehicle(vehicleData: VehicleFormData, licenseId?: st
 
 export async function getVehicleById(id: string): Promise<Vehicle | null> {
 
-  const { data, error } = await supabase.from('vehicles').select('*').eq('id', id).single();
+  const lid = getCurrentLicenseId();
+  let query = supabase.from('vehicles').select('*').eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { data, error } = await query.single();
   if (error) throw error;
   return data;
 }
 
 export async function updateVehicle(id: string, vehicleData: Partial<VehicleFormData>): Promise<Vehicle> {
 
+  const lid = getCurrentLicenseId();
   const updateData: any = { ...vehicleData, updated_at: new Date().toISOString() };
   if (vehicleData.floor && vehicleData.apartment) {
     updateData.apartment_code = generateApartmentCode(vehicleData.floor, vehicleData.apartment);
   }
   if (vehicleData.license_plate) updateData.license_plate = vehicleData.license_plate.toUpperCase();
 
-  const { data, error } = await supabase.from('vehicles').update(updateData).eq('id', id).select().single();
+  let query = supabase.from('vehicles').update(updateData).eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { data, error } = await query.select().single();
   if (error) throw error;
   return data;
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
 
-  const { error } = await supabase.from('vehicles').delete().eq('id', id);
+  const lid = getCurrentLicenseId();
+  let query = supabase.from('vehicles').delete().eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { error } = await query;
   if (error) throw error;
 }
 
@@ -398,31 +407,36 @@ export async function createVisitor(visitorData: VisitorFormData, licenseId?: st
 
 export async function checkInVisitor(id: string): Promise<Visitor> {
 
-  const { data, error } = await supabase
+  const lid = getCurrentLicenseId();
+  let query = supabase
     .from('visitors')
     .update({ status: 'active', entry_time: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single();
+    .eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { data, error } = await query.select().single();
   if (error) throw error;
   return data;
 }
 
 export async function checkOutVisitor(id: string): Promise<Visitor> {
 
-  const { data, error } = await supabase
+  const lid = getCurrentLicenseId();
+  let query = supabase
     .from('visitors')
     .update({ status: 'completed', exit_time: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single();
+    .eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { data, error } = await query.select().single();
   if (error) throw error;
   return data;
 }
 
 export async function deleteVisitor(id: string): Promise<void> {
 
-  const { error } = await supabase.from('visitors').delete().eq('id', id);
+  const lid = getCurrentLicenseId();
+  let query = supabase.from('visitors').delete().eq('id', id);
+  if (lid) query = query.eq('license_id', lid);
+  const { error } = await query;
   if (error) throw error;
 }
 

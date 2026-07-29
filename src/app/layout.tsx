@@ -18,6 +18,9 @@ const rubik = Rubik({
 export const metadata: Metadata = {
   title: "Control de Acceso Vehicular",
   description: "Sistema de Control de Acceso Vehicular",
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

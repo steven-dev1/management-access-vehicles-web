@@ -58,9 +58,10 @@ export default function NewVehiclePage() {
               <Label className="text-slate-300">Placa</Label>
               <Input
                 value={form.license_plate}
-                onChange={(e) => setForm({ ...form, license_plate: e.target.value.toUpperCase() })}
+                onChange={(e) => setForm({ ...form, license_plate: e.target.value.toUpperCase().slice(0, 10) })}
                 placeholder="ABC 123"
                 className="bg-[#1A1A1A] border-[#374151] text-white"
+                maxLength={10}
                 required
               />
             </div>
@@ -116,9 +117,10 @@ export default function NewVehiclePage() {
               <Label className="text-slate-300">Propietario</Label>
               <Input
                 value={form.owner_name}
-                onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
+                onChange={(e) => setForm({ ...form, owner_name: e.target.value.slice(0, 100) })}
                 placeholder="Nombre del propietario"
                 className="bg-[#1A1A1A] border-[#374151] text-white"
+                maxLength={100}
                 required
               />
             </div>

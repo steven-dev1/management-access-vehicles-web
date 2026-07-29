@@ -30,6 +30,12 @@ export function MobileHeader() {
   }, []);
 
   const handleLogout = () => {
+    // Clear cookies
+    document.cookie = 'license_active=; path=/; max-age=0';
+    document.cookie = 'license_id=; path=/; max-age=0';
+    document.cookie = 'complex_name=; path=/; max-age=0';
+    document.cookie = 'is_admin=; path=/; max-age=0';
+    // Clear localStorage
     localStorage.removeItem('license_active');
     localStorage.removeItem('license_id');
     localStorage.removeItem('complex_name');
@@ -50,7 +56,7 @@ export function MobileHeader() {
           <div className="flex flex-col h-full">
             <div className="p-4 border-b border-[#374151]">
               <div className="flex items-center gap-2">
-                <Car className="w-5 h-5 text-[#3B82F6]" />
+                <img src="/favicon.png" alt="Logo" className="w-6 h-6 rounded-md" />
                 <span className="font-bold text-white">{complexName}</span>
               </div>
             </div>
@@ -83,7 +89,7 @@ export function MobileHeader() {
       </Sheet>
 
       <div className="flex items-center gap-2">
-        <Car className="w-5 h-5 text-[#3B82F6]" />
+        <img src="/favicon.png" alt="Logo" className="w-6 h-6 rounded-md" />
         <span className="font-bold text-white">{complexName}</span>
       </div>
 

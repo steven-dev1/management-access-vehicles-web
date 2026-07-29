@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const { signIn } = useAuth();
@@ -23,6 +23,12 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn(email, password);
+
+      // Set cookies for middleware
+      document.cookie = `is_admin=true; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+      document.cookie = `license_active=true; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+
+      // Also keep localStorage for backward compatibility
       localStorage.setItem('is_admin', 'true');
       localStorage.setItem('license_active', 'true');
       router.push('/');
@@ -37,9 +43,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-            <ShieldCheck className="h-8 w-8 text-primary" />
-          </div>
+          <img src="/favicon.png" alt="Logo" className="w-16 h-16 mx-auto rounded-2xl mb-4" />
           <CardTitle className="text-2xl">Panel Administrativo</CardTitle>
           <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
         </CardHeader>
