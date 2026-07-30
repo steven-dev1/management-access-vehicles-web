@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { getLicenses, createLicense, updateLicense, setPermanent, extendLicense, deleteLicense } from '@/lib/repository';
-import type { License } from '@/lib/types';
+import { getLicenses, getLicenseDevices, createLicense, updateLicense, setPermanent, extendLicense, deleteLicense } from '@/lib/repository';
+import type { License, LicenseDevice } from '@/lib/types';
 import { maskLicenseKey } from '@/lib/security';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, RefreshCw, Building2, Calendar, Key, Edit3, Check, X, Infinity, Eye, Search } from 'lucide-react';
+import { Plus, Trash2, RefreshCw, Building2, Calendar, Key, Edit3, Check, X, Infinity, Eye, Search, Smartphone, MonitorSmartphone } from 'lucide-react';
 
 export default function LicensesPage() {
   const [licenses, setLicenses] = useState<License[]>([]);
@@ -28,11 +28,18 @@ export default function LicensesPage() {
   const [formPermanent, setFormPermanent] = useState(false);
   const [extendDays, setExtendDays] = useState('30');
   const [search, setSearch] = useState('');
+  const [devicesMap, setDevicesMap] = useState<Record<string, LicenseDevice[]>>({});
 
   const loadData = useCallback(async () => {
     try {
       const lic = await getLicenses();
       setLicenses(lic);
+      const allDevices: Record<string, LicenseDevice[]> = {};
+      await Promise.all(lic.map(async (l) => {
+        const devs = await getLicenseDevices(l.id);
+        allDevices[l.id] = devs;
+      }));
+      setDevicesMap(allDevices);
     } catch { }
     finally { setLoading(false); }
   }, []);
@@ -230,6 +237,29 @@ export default function LicensesPage() {
                           <span>{isPermanent ? 'Permanente' : new Date(license.trial_ends_at!).toLocaleDateString('es-CO')}</span>
                         </div>
                       </div>
+
+                      {devicesMap[license.id] && devicesMap[license.id].length > 0 && (
+                        <div className="space-y-2 pt-2 border-t border-[#374151]">
+                          <p className="text-xs text-[#9CA3AF] font-medium">Dispositivos conectados</p>
+                          <div className="space-y-1.5">
+                            {devicesMap[license.id].map((device) => (
+                              <div key={device.id} className="flex items-center gap-2 p-2 bg-[#0A0A0A] rounded-lg">
+                                <div className="w-7 h-7 rounded-md bg-[#3B82F6]/15 flex items-center justify-center shrink-0">
+                                  {device.device_name?.toLowerCase().includes('windows') || device.device_name?.toLowerCase().includes('mac') ? (
+                                    <MonitorSmartphone className="h-3.5 w-3.5 text-[#3B82F6]" />
+                                  ) : (
+                                    <Smartphone className="h-3.5 w-3.5 text-[#3B82F6]" />
+                                  )}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-white truncate">{device.device_name || 'Dispositivo'}</p>
+                                  <p className="text-[10px] text-[#9CA3AF] font-mono truncate">{device.device_id}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="flex gap-2 pt-2 border-t border-[#374151]">
                         <Button variant="outline" size="sm" onClick={() => startEdit(license)} className="flex-1 border-[#374151] text-white hover:bg-[#2A2A2A]">
