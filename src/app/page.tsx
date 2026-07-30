@@ -208,7 +208,7 @@ function UserPanel() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  useRealtime(['vehicles', 'access_logs'], loadData);
+  useRealtime(['vehicles', 'access_logs', 'visitors'], loadData);
 
   if (loading) return <LoadingSkeleton />;
 
