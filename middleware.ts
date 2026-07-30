@@ -34,11 +34,12 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Check license activation
+  // Check license activation or admin
   const licenseActive = request.cookies.get('license_active')?.value;
   const licenseId = request.cookies.get('license_id')?.value;
+  const isAdmin = request.cookies.get('is_admin')?.value;
 
-  if (!licenseActive || !licenseId) {
+  if (!licenseActive && !isAdmin) {
     const url = request.nextUrl.clone();
     url.pathname = '/activate';
     return NextResponse.redirect(url);
